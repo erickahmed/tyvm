@@ -1,2 +1,2 @@
-# ez-virtual-machine
- An easy virtual machine written in C
+# gpvm
+ A general purpose virtual machine
