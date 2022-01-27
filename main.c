@@ -12,22 +12,22 @@ uint16_t memory[UINT16_MAX];
 /* Initializing 10 registers of which:
 8 general purpose, 1 program counter, 1 conditional */
 enum {
-    R_GP0,
-    R_GP1,
-    R_GP2,
-    R_GP3,
-    R_GP4,
-    R_GP5,
-    R_GP6,
-    R_GP7,
-    R_PC = 0,
-    R_COND,
-    R_COUNT
+    RG_GP0 = 0,
+    RG_GP1,
+    RG_GP2,
+    RG_GP3,
+    RG_GP4,
+    RG_GP5,
+    RG_GP6,
+    RG_GP7,
+    RG_PC = 0,       // program counter
+    RG_COND,         // condition flag
+    RG_COUNT
 };
 
-uint16_t reg[R_COUNT];
+uint16_t reg[RG_COUNT];
 
-/* Creating LC-3 instruction set opcodes */
+/* Creating instruction set opcodes */
 enum {
     OP_BR = 0,      // branch
     OP_ADD,         // add
@@ -46,3 +46,10 @@ enum {
     OP_LEA,         // load effective address
     OP_TRAP,        // execute trap
 };
+
+/* Creating condition flags */
+enum {
+    FL_POS = 1 << 0,    // P
+    FL_ZRO = 1 << 1,    // Z
+    FL_NEG = 1 << 2,    // N
+}
