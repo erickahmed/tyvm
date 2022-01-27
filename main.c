@@ -4,6 +4,7 @@
     Written by Erick Ahmed, 2022
 */
 
+
 #include <stdint.h>>
 
 /* Initializing 128kb of memory */
@@ -49,7 +50,8 @@ enum {
 
 /* Creating condition flags */
 enum {
-    FL_POS = 1 << 0,    // P
+    FL_POS = 1,         // P
     FL_ZRO = 1 << 1,    // Z
     FL_NEG = 1 << 2,    // N
 }
+
