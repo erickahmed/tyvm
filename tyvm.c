@@ -1,5 +1,5 @@
 /*
-    TVM is a virtual machine for LC-3 based operating systems and it used for educational purposes.
+    TVM is a virtual machine for LC-3 based operating systems and it is used for educational purposes.
     Open-source software under MIT License
     Written by Erick Ahmed, 2022
 */
@@ -9,7 +9,7 @@
 
 /* Initializing 10 registers of which:
 8 general purpose, 1 program counter, 1 conditional */
-enum {
+enum registers {
     RG_GP0 = 0,
     RG_GP1,
     RG_GP2,
@@ -18,7 +18,7 @@ enum {
     RG_GP5,
     RG_GP6,
     RG_GP7,
-    RG_PC = 0,       // program counter
+    RG_PC,           // program counter
     RG_COND,         // condition flag
     RG_COUNT
 };
@@ -28,7 +28,7 @@ uint16_t memory[UINT16_MAX];
 uint16_t reg[RG_COUNT];
 
 /* Creating instruction set opcodes */
-enum {
+enum opcodes {
     OP_BR = 0,      // branch
     OP_ADD,         // add
     OP_LD,          // load
@@ -48,9 +48,15 @@ enum {
 };
 
 /* Creating condition flags */
-enum {
+enum flags {
     FL_POS = 1,         // P
     FL_ZRO = 1 << 1,    // Z
     FL_NEG = 1 << 2,    // N
 };
+
+int main(int argc, const char* argv[]) {
+
+
+
+}
 
