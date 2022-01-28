@@ -1,4 +1,3 @@
-
 TARGET ?= a.out
 SRC_DIRS ?= ./src
 
@@ -19,3 +18,5 @@ clean:
 	$(RM) $(TARGET) $(OBJS) $(DEPS)
 
 -include $(DEPS)
+
+# if "make" does not work on shell, try "make -d"

@@ -54,7 +54,16 @@ enum flags {
     FL_NEG = 1 << 2,    // N
 };
 
+
 int main(int argc, const char* argv[]) {
+
+    enum registers RG;
+    enum opcodes   OP;
+
+    reg[RG_COND]  = FL_ZRO;
+    reg[RG_PC]    = 0x3000;     //0x3000 is default
+
+
 
 
 
