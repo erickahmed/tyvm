@@ -1,7 +1,7 @@
 # tyvm
 TYVM (Tiny Virtual Machine) is a 16bit VM based on the LC-3 architechture
 
-###HARDWARE:
+### HARDWARE:
   - 16-bit LC-3 architechture
   - 128kb memory
   - 10 registers:
