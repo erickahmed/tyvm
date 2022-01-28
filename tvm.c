@@ -7,9 +7,6 @@
 
 #include <stdint.h>>
 
-/* Initializing 128kb of memory */
-uint16_t memory[UINT16_MAX];
-
 /* Initializing 10 registers of which:
 8 general purpose, 1 program counter, 1 conditional */
 enum {
@@ -26,6 +23,8 @@ enum {
     RG_COUNT
 };
 
+/* Initializing memory and register storages */
+uint16_t memory[UINT16_MAX];
 uint16_t reg[RG_COUNT];
 
 /* Creating instruction set opcodes */
