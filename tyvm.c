@@ -1,10 +1,10 @@
 /*
     TVM is a virtual machine for LC-3 based operating systems and it is used for educational purposes.
-    Open-source software under MIT License
+    Copyright (c) under MIT license
     Written by Erick Ahmed, 2022
 */
 
-#define IS_UNIX
+#define __UNIX
 
 /* universal libraries */
 #include <stdio.h>
@@ -14,16 +14,16 @@
 #include <signal.h>
 
 /* unix only libraries */
-#ifdef IS_UNIX
+#ifdef __UNIX
     #include <unistd.h>
     #include <fcntl.h>
-#endif
 
-/* sys libraries */
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/termios.h>
-#include <sys/mman.h>
+    /* sys libraries */
+    #include <sys/time.h>
+    #include <sys/types.h>
+    #include <termios.h>
+    #include <mman.h>
+#endif
 
 #define TRUE 1
 #define FALSE 0
@@ -96,6 +96,19 @@ enum flags {
 
 int main(int argc, const char* argv[]) {
 
+    if(argc < 2) {
+        printf("usage: [image-file1] ...\n");
+        exit(2);
+    }
+
+    for(int i = 1; i < argc; i++) {
+        printf("failed to load image: %s\n", argv[i]);
+        exit(1);
+    }
+
+    signal(SIGINT, handle_interrupt);
+    disable_input_buffering();
+
     reg[RG_COND]  = FL_ZRO;
     reg[RG_PC]    = 0x3000;     //0x3000 is default load address
 
@@ -152,9 +165,7 @@ int main(int argc, const char* argv[]) {
             default:
                 {BAD_OPCODE}
                 break;
-
-
-
-        };
+        }
     }
+    restore_input_buffering();
 }
