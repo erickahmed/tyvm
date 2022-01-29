@@ -4,8 +4,28 @@
     Written by Erick Ahmed, 2022
 */
 
+#include <stdint.h>
 
-#include <stdint.h>>
+#define TRUE 1
+#define FALSE 0
+
+#define BR
+#define ADD
+#define LD
+#define ST
+#define JSR
+#define AND
+#define LDR
+#define STR
+#define RTI
+#define NOT
+#define LDI
+#define STI
+#define JMP
+#define RES
+#define LEA
+#define TRAP
+#define BAD_OPCODE
 
 /* Initializing 10 registers of which:
 8 general purpose, 1 program counter, 1 conditional */
@@ -57,15 +77,65 @@ enum flags {
 
 int main(int argc, const char* argv[]) {
 
-    enum registers RG;
-    enum opcodes   OP;
-
     reg[RG_COND]  = FL_ZRO;
-    reg[RG_PC]    = 0x3000;     //0x3000 is default
+    reg[RG_PC]    = 0x3000;     //0x3000 is default load address
+
+    int running = TRUE;
+    while(running) {
+        uint16_t instr = mem_read(reg[RG_PC]++);
+        uint16_t op = instr >> 12;
+
+        switch (op) {
+            case OP_BR:
+                {BR};
+                break;
+            case OP_ADD:
+                {ADD};
+                break;
+            case OP_LD:
+                {LD};
+                break;
+            case OP_ST:
+                {ST}
+                break;
+            case OP_JSR:
+                {JSR};
+                break;
+            case OP_AND:
+                {AND};
+                break;
+            case OP_LDR:
+                {LDR};
+                break;
+            case OP_STR:
+                {STR};
+                break;
+            case OP_NOT:
+                {NOT};
+                break;
+            case OP_LDI:
+                {LDI};
+                break;
+            case OP_STI:
+                {STI};
+                break;
+            case OP_JMP:
+                {JMP};
+                break;
+            case OP_LEA:
+                {LEA};
+                break;
+            case OP_TRAP:
+                {TRAP};
+                break;
+            case OP_RES:
+            case OP_RTI:
+            default:
+                {BAD_OPCODE}
+                break;
 
 
 
-
-
+        };
+    }
 }
-
