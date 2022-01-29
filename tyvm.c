@@ -28,6 +28,7 @@
 #define TRUE 1
 #define FALSE 0
 
+/* These are temporary, just to not get a lot of error while writing code */
 #define BR
 #define ADD
 #define LD
@@ -167,5 +168,5 @@ int main(int argc, const char* argv[]) {
                 break;
         }
     }
-    restore_input_buffering();
+    restore_input_buffering();      // shutdown
 }
