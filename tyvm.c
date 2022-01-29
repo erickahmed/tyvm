@@ -4,7 +4,26 @@
     Written by Erick Ahmed, 2022
 */
 
+#define IS_UNIX
+
+/* universal libraries */
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
+#include <signal.h>
+
+/* unix only libraries */
+#ifdef IS_UNIX
+    #include <unistd.h>
+    #include <fcntl.h>
+#endif
+
+/* sys libraries */
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/termios.h>
+#include <sys/mman.h>
 
 #define TRUE 1
 #define FALSE 0
