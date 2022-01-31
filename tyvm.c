@@ -96,13 +96,21 @@ enum flags {
     FL_N = 1 << 2,    // Negative
 };
 
-/* sign extension for immediate add mode (imm5[0:4])
+/* Sign extension function for immediate add mode (imm5[0:4])
 transforms 5bit number to 8bit number preserving sign*/
-uint16_t sign_extend(uint16_t bin, int bit_count) {
-    if((bin >> (bit_count - 1)) & 1) {
-        bin |= (0xFFFF << bit_count);
+uint16_t sign_extend(uint16_t n, int bit_count) {
+    if((n >> (bit_count - 1)) & 1) {
+        n |= (0xFFFF << bit_count);
     }
-    return bin;
+    return n;
+}
+
+/* Flag update function
+Every time a value is written to a register the flag will be updated */
+void update_flags(uint16_t r) {
+    if (reg[r] == 0) reg[RG_COND] = FL_Z;
+    else if (reg[r] >> 15) reg[RG_COND] = FL_N;
+    else reg[RG_COND] = FL_P;
 }
 
 /* main loop */
