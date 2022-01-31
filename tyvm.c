@@ -96,9 +96,14 @@ enum flags {
     FL_N = 1 << 2,    // Negative
 };
 
-
-
-
+/* sign extension for immediate add mode (imm5[0:4])
+transforms 5bit number to 8bit number preserving sign*/
+uint16_t sign_extend(uint16_t bin, int bit_count) {
+    if((bin >> (bit_count - 1)) & 1) {
+        bin |= (0xFFFF << bit_count);
+    }
+    return bin;
+}
 
 /* main loop */
 int main(int argc, const char* argv[]) {
