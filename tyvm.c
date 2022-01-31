@@ -4,7 +4,7 @@
     Written by Erick Ahmed, 2022
 */
 
-#define __UNIX
+//#define __UNIX
 
 /* universal libraries */
 #include <stdio.h>
@@ -14,6 +14,7 @@
 #include <signal.h>
 
 /* unix only libraries */
+// TODO: solve include errors
 #ifdef __UNIX
     #include <unistd.h>
     #include <fcntl.h>
@@ -50,14 +51,14 @@
 /* Initializing 10 registers of which:
 8 general purpose, 1 program counter, 1 conditional */
 enum registers {
-    RG_GP0 = 0,
-    RG_GP1,
-    RG_GP2,
-    RG_GP3,
-    RG_GP4,
-    RG_GP5,
-    RG_GP6,
-    RG_GP7,
+    RG_000 = 0,
+    RG_001,
+    RG_010,
+    RG_011,
+    RG_100,
+    RG_101,
+    RG_110,
+    RG_111,
     RG_PC,           // program counter
     RG_COND,         // condition flag
     RG_COUNT
@@ -89,9 +90,9 @@ enum opcodes {
 
 /* Creating condition flags */
 enum flags {
-    FL_POS = 1,         // P
-    FL_ZRO = 1 << 1,    // Z
-    FL_NEG = 1 << 2,    // N
+    FL_P = 1,         // Positive
+    FL_Z = 1 << 1,    // Zero
+    FL_N = 1 << 2,    // Negative
 };
 
 
@@ -110,7 +111,7 @@ int main(int argc, const char* argv[]) {
     signal(SIGINT, handle_interrupt);
     disable_input_buffering();
 
-    reg[RG_COND]  = FL_ZRO;
+    reg[RG_COND]  = FL_Z;
     reg[RG_PC]    = 0x3000;     //0x3000 is default load address
 
     int running = TRUE;
@@ -123,7 +124,10 @@ int main(int argc, const char* argv[]) {
                 {BR};
                 break;
             case OP_ADD:
-                {ADD};
+
+
+
+//              {ADD};
                 break;
             case OP_LD:
                 {LD};
@@ -168,5 +172,5 @@ int main(int argc, const char* argv[]) {
                 break;
         }
     }
-    restore_input_buffering();      // shutdown
+    restore_input_buffering();      // if shutdown then restore terminal settings
 }

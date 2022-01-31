@@ -54,3 +54,6 @@ dkms.conf
 #folders
 .git/
 .vscode/
+vcpkg/
+libraries/
+build
