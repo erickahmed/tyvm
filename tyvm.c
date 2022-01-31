@@ -14,7 +14,7 @@
 #include <signal.h>
 
 /* unix only libraries */
-// TODO: solve include errors
+// FIXME: solve include errors
 #ifdef __UNIX
     #include <unistd.h>
     #include <fcntl.h>
@@ -29,7 +29,7 @@
 #define TRUE 1
 #define FALSE 0
 
-/* These are temporary, just to not get a lot of error while writing code */
+/* TODO: remember to cancel defines after writing all functions */
 #define BR
 #define ADD
 #define LD
@@ -47,6 +47,7 @@
 #define LEA
 #define TRAP
 #define BAD_OPCODE
+//define handle_interrupt()
 
 /* Initializing 10 registers of which:
 8 general purpose, 1 program counter, 1 conditional */
@@ -70,22 +71,22 @@ uint16_t reg[RG_COUNT];
 
 /* Creating instruction set opcodes */
 enum opcodes {
-    OP_BR = 0,      // branch
-    OP_ADD,         // add
-    OP_LD,          // load
-    OP_ST,          // store
-    OP_JSR,         // jump register
-    OP_AND,         // bitwise add
-    OP_LDR,         // load register
-    OP_STR,         // store register
+    OP_BR = 0,      // branch, 0001
+    OP_ADD,         // add, 0010
+    OP_LD,          // load, 0011
+    OP_ST,          // store, 0100
+    OP_JSR,         // jump register, 0101
+    OP_AND,         // bitwise add, 0110
+    OP_LDR,         // load register, 0111
+    OP_STR,         // store register, 1000
     OP_RTI,         // unused opcode
-    OP_NOT,         // bitwise not
-    OP_LDI,         // indirect load
-    OP_STI,         // indirect store
-    OP_JMP,         // jump
-    OP_RES,         // reserved opcode
-    OP_LEA,         // load effective address
-    OP_TRAP,        // execute trap
+    OP_NOT,         // bitwise not, 1001
+    OP_LDI,         // indirect load, 1010
+    OP_STI,         // indirect store, 1011
+    OP_JMP,         // jump, 1100
+    OP_RES,         // reserved opcode, 1101
+    OP_LEA,         // load effective address, 1110
+    OP_TRAP,        // execute trap, 1111
 };
 
 /* Creating condition flags */
@@ -95,7 +96,17 @@ enum flags {
     FL_N = 1 << 2,    // Negative
 };
 
+/* sign extension for immediate add mode (imm5[0:4])
+transforms 5bit number to 8bit number preserving sign*/
+uint16_t sign_extend(uint16_t bin, int bit_count) {
+    if((bin >> (bit_count - 1)) & 1) {
+        bin |= (0xFFFF << bit_count);
+    }
+    return bin;
+}
 
+
+/* main loop */
 int main(int argc, const char* argv[]) {
 
     if(argc < 2) {
@@ -108,7 +119,7 @@ int main(int argc, const char* argv[]) {
         exit(1);
     }
 
-    signal(SIGINT, handle_interrupt);
+    signal(SIGINT, handle_interrupt());     //FIXME: handle_interrupt may not be correct, gives an error without semicolons (should be without)
     disable_input_buffering();
 
     reg[RG_COND]  = FL_Z;
@@ -172,5 +183,5 @@ int main(int argc, const char* argv[]) {
                 break;
         }
     }
-    restore_input_buffering();      // if shutdown then restore terminal settings
+    restore_input_buffering();  // if shutdown then restore terminal settings
 }
