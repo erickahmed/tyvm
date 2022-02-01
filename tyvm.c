@@ -149,12 +149,12 @@ int main(int argc, const char* argv[]) {
                 uint16_t imm5;                           // immediate mode register
 
                 if(imm_flag == 0) {
-                    uint16_t sr2 = (instr & 0x7);
-                    reg[dr] = reg[sr1] + sr2;
+                    sr2 = (instr & 0x7);
+                    reg[dr] = reg[sr1] + sr2;            // register mode add
                 }
                 else {
                     imm5 = sign_extend(instr & 0x1F, 5);
-                    reg[dr] = reg[sr1] + imm5;
+                    reg[dr] = reg[sr1] + imm5;           // immediate mode add
                 }
 
                 update_flags(dr);
@@ -182,6 +182,9 @@ int main(int argc, const char* argv[]) {
                 {NOT};
                 break;
             case OP_LDI:
+
+
+
                 {LDI};
                 break;
             case OP_STI:
