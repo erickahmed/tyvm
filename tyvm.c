@@ -129,8 +129,8 @@ int main(int argc, const char* argv[]) {
     signal(SIGINT, handle_interrupt());     //FIXME: handle_interrupt may not be correct, gives an error without semicolons (should be without)
     disable_input_buffering();
 
-    reg[RG_COND]  = FL_Z;
-    reg[RG_PC]    = 0x3000;     //0x3000 is default load address
+    reg[RG_COND] = FL_Z;
+    reg[RG_PC]   = 0x3000;     //0x3000 is default load address
 
     int running = TRUE;
     while(running) {
@@ -142,10 +142,23 @@ int main(int argc, const char* argv[]) {
                 {BR};
                 break;
             case OP_ADD:
+                uint16_t dr       = (instr >> 9) & 0x7;  // destination register
+                uint16_t sr1      = (instr >> 6) & 0x7;  // source register 1
+                uint16_t sr2;                            // source register 2
+                uint16_t imm_flag = (instr >> 5) & 0x1;  // immediate mode flag (bit[5])
+                uint16_t imm5;                           // immediate mode register
 
+                if(imm_flag == 0) {
+                    uint16_t sr2 = (instr & 0x7);
+                    reg[dr] = reg[sr1] + sr2;
+                }
+                else {
+                    imm5 = sign_extend(instr & 0x1F, 5);
+                    reg[dr] = reg[sr1] + imm5;
+                }
 
+                update_flags(dr);
 
-//              {ADD};
                 break;
             case OP_LD:
                 {LD};
