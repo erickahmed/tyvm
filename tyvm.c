@@ -151,8 +151,7 @@ int main(int argc, const char* argv[]) {
                 if(imm_flag == 0) {
                     sr2 = (instr & 0x7);
                     reg[dr] = reg[sr1] + sr2;            // register mode add
-                }
-                else {
+                } else {
                     imm5 = sign_extend(instr & 0x1F, 5);
                     reg[dr] = reg[sr1] + imm5;           // immediate mode add
                 }
