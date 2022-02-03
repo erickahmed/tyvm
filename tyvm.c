@@ -29,25 +29,6 @@
 #define TRUE 1
 #define FALSE 0
 
-/* TODO: remember to cancel defines after writing all functions */
-#define BR
-#define ADD
-#define LD
-#define ST
-#define JSR
-#define AND
-#define LDR
-#define STR
-#define RTI
-#define NOT
-#define LDI
-#define STI
-#define JMP
-#define RES
-#define LEA
-#define TRAP
-#define BAD_OPCODE
-//define handle_interrupt()
 
 /* Initializing 10 registers of which:
 8 general purpose, 1 program counter, 1 conditional */
@@ -160,13 +141,13 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_LD:
-                {LD};
+                //{LD};
                 break;
             case OP_ST:
-                {ST}
+                //{ST}
                 break;
             case OP_JSR:
-                {JSR};
+                //{JSR};
                 break;
             case OP_AND:
                 uint16_t dr       = (instr >> 9) & 0x7;
@@ -187,16 +168,16 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_LDR:
-                {LDR};
+                //{LDR};
                 break;
             case OP_STR:
-                {STR};
+                //{STR};
                 break;
             case OP_NOT:
-                {NOT};
+                //{NOT};
                 break;
             case OP_LDI:
-                uint16_t mdr;       // memory data register
+                uint16_t mdr;                                           // memory data register
                 uint16_t dr        = (instr >> 9) & 0x7;
                 uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
 
@@ -207,21 +188,21 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_STI:
-                {STI};
+                //{STI};
                 break;
             case OP_JMP:
-                {JMP};
+                //{JMP};
                 break;
             case OP_LEA:
-                {LEA};
+                //{LEA};
                 break;
             case OP_TRAP:
-                {TRAP};
+                //{TRAP};
                 break;
             case OP_RES:
             case OP_RTI:
             default:
-                {BAD_OPCODE}
+                //{BAD_OPCODE}
                 break;
         }
     }
