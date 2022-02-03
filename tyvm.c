@@ -76,7 +76,7 @@ enum opcodes {      // [description, opcode value]
     OP_LD,          // load,
     OP_ST,          // store,
     OP_JSR,         // jump register,
-    OP_AND,         // bitwise add,
+    OP_AND,         // bitwise and,
     OP_LDR,         // load register,
     OP_STR,         // store register,
     OP_RTI,         // unused opcode
@@ -169,7 +169,22 @@ int main(int argc, const char* argv[]) {
                 {JSR};
                 break;
             case OP_AND:
-                {AND};
+                uint16_t dr       = (instr >> 9) & 0x7;
+                uint16_t sr1      = (instr >> 6) & 0x7;
+                uint16_t sr2;
+                uint16_t imm_flag = (instr >> 5) & 0x1;
+                uint16_t imm5;
+
+                if(imm_flag == 0) {
+                    sr2 = (instr & 0x7);
+                    reg[dr] = reg[sr1] & sr2;            // register mode and
+                } else {
+                    imm5 = sign_extend(instr & 0x1F, 5);
+                    reg[dr] = reg[sr1] & imm5;           // immediate mode and
+                }
+
+                update_flags(dr);
+
                 break;
             case OP_LDR:
                 {LDR};
@@ -182,8 +197,8 @@ int main(int argc, const char* argv[]) {
                 break;
             case OP_LDI:
                 uint16_t mdr;       // memory data register
-                uint16_t dr        = (instr >> 9) & 0x7;     // 9-bit value that indicates where to load the address when added to RG_PC
-                uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);
+                uint16_t dr        = (instr >> 9) & 0x7;
+                uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
 
                 reg[mdr] = mem_read(PCoffset9 + reg[RG_PC]++);
                 reg[dr]  = mem_read(reg[mdr]);
