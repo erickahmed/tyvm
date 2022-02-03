@@ -185,7 +185,6 @@ int main(int argc, const char* argv[]) {
                 uint16_t dr        = (instr >> 9) & 0x7;     // 9-bit value that indicates where to load the address when added to RG_PC
                 uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);
 
-
                 reg[mdr] = mem_read(PCoffset9 + reg[RG_PC]++);
                 reg[dr]  = mem_read(reg[mdr]);
 
