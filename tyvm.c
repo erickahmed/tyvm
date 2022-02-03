@@ -70,23 +70,23 @@ uint16_t memory[UINT16_MAX];
 uint16_t reg[RG_COUNT];
 
 /* Creating instruction set opcodes */
-enum opcodes {
-    OP_BR = 0,      // branch, 0001
-    OP_ADD,         // add, 0010
-    OP_LD,          // load, 0011
-    OP_ST,          // store, 0100
-    OP_JSR,         // jump register, 0101
-    OP_AND,         // bitwise add, 0110
-    OP_LDR,         // load register, 0111
-    OP_STR,         // store register, 1000
+enum opcodes {      // [description, opcode value]
+    OP_BR = 0,      // branch,
+    OP_ADD,         // add, 0001
+    OP_LD,          // load,
+    OP_ST,          // store,
+    OP_JSR,         // jump register,
+    OP_AND,         // bitwise add,
+    OP_LDR,         // load register,
+    OP_STR,         // store register,
     OP_RTI,         // unused opcode
-    OP_NOT,         // bitwise not, 1001
+    OP_NOT,         // bitwise not,
     OP_LDI,         // indirect load, 1010
-    OP_STI,         // indirect store, 1011
-    OP_JMP,         // jump, 1100
-    OP_RES,         // reserved opcode, 1101
-    OP_LEA,         // load effective address, 1110
-    OP_TRAP,        // execute trap, 1111
+    OP_STI,         // indirect store,
+    OP_JMP,         // jump,
+    OP_RES,         // reserved opcode,
+    OP_LEA,         // load effective address,
+    OP_TRAP,        // execute trap,
 };
 
 /* Creating condition flags */
@@ -181,10 +181,16 @@ int main(int argc, const char* argv[]) {
                 {NOT};
                 break;
             case OP_LDI:
+                uint16_t mdr;       // memory data register
+                uint16_t dr        = (instr >> 9) & 0x7;     // 9-bit value that indicates where to load the address when added to RG_PC
+                uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);
 
 
+                reg[mdr] = mem_read(PCoffset9 + reg[RG_PC]++);
+                reg[dr]  = mem_read(reg[mdr]);
 
-                {LDI};
+                update_flags(dr);
+
                 break;
             case OP_STI:
                 {STI};
