@@ -130,7 +130,7 @@ void read_image_file(FILE* file) {
 int read_image(const char* image_path) {
     FILE* file = fopen(image_path, "rb");
 
-    if (!file) { return 0; };
+    if(!file) return 0;
 
     read_image_file(file);
     fclose(file);
