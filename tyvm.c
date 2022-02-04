@@ -46,6 +46,15 @@ enum registers {
     RG_COUNT
 };
 
+enum trapcodes {
+    TRAP_GETC  = 0x20,  // get charcter from keyboard
+    TRAP_OUT   = 0x21,  // output a character
+    TRAP_PUTS  = 0x22,  // output a word string
+    TRAP_IN    = 0x23,  // get charcter from keyboard and echo to terminal
+    TRAP_PUTSP = 0x24,  // output a byte string
+    TRAP_HALT  = 0x25   // halt program
+};
+
 /* Initializing memory and register storages */
 uint16_t memory[UINT16_MAX];
 uint16_t reg[RG_COUNT];
@@ -256,15 +265,6 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_TRAP:
-                enum {
-                    TRAP_GETC  = 0x20,  // get charcter from keyboard
-                    TRAP_OUT   = 0x21,  // output a character
-                    TRAP_PUTS  = 0x22,  // output a word string
-                    TRAP_IN    = 0x23,  // get charcter from keyboard and echo to terminal
-                    TRAP_PUTSP = 0x24,  // output a byte string
-                    TRAP_HALT  = 0x25   // halt program
-                };
-
                 switch(instr & 0xFF) {
                     case TRAP_GETC:
                         reg[RG_000] = (uint16_t)getchar();
@@ -313,7 +313,7 @@ int main(int argc, const char* argv[]) {
                         break;
                     default:
                         abort();
-
+                        break;
                 }
 
                 break;
@@ -324,5 +324,5 @@ int main(int argc, const char* argv[]) {
                 break;
         }
     }
-    restore_input_buffering();  // if shutdown then restore terminal settings
+    restore_input_buffering();  //restore terminal settings when shutdown
 }
