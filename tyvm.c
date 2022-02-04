@@ -52,7 +52,7 @@ uint16_t reg[RG_COUNT];
 
 /* Creating instruction set opcodes */
 enum opcodes {      // [name, value]
-    OP_BR = 0,      // branch,
+    OP_BR = 0,      // branch, 0000
     OP_ADD,         // add, 0001
     OP_LD,          // load, 0010
     OP_ST,          // store, 0011
@@ -120,7 +120,11 @@ int main(int argc, const char* argv[]) {
 
         switch (op) {
             case OP_BR:
-                //{BR};
+                uint16_t cond = (instr >> 9) & 0x7;
+                uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);
+
+                if(cond & reg[RG_COND]) reg[RG_PC] += PCoffset9;
+
                 break;
             case OP_ADD:
                 uint16_t dr       = (instr >> 9) & 0x7;  // destination register
