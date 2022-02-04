@@ -22,8 +22,8 @@
     /* sys libraries */
     #include <sys/time.h>
     #include <sys/types.h>
-    #include <termios.h>
-    #include <mman.h>
+    #include <sys/termios.h>
+    #include <sys/mman.h>
 #endif
 
 #define TRUE 1
@@ -89,12 +89,12 @@ uint16_t sign_extend(uint16_t n, int bit_count) {
 /* Flag update function
 Every time a value is written to a register the flag will be updated */
 void update_flags(uint16_t r) {
-    if (reg[r] == 0) reg[RG_COND] = FL_Z;
-    else if (reg[r] >> 15) reg[RG_COND] = FL_N;
+    if(reg[r] == 0) reg[RG_COND] = FL_Z;
+    else if(reg[r] >> 15) reg[RG_COND] = FL_N;
     else reg[RG_COND] = FL_P;
 }
 
-/* main loop */
+
 int main(int argc, const char* argv[]) {
 
     if(argc < 2) {
@@ -206,7 +206,7 @@ int main(int argc, const char* argv[]) {
                 uint16_t BaseR   = (instr >> 6) & 0x7;
                 uint16_t offset6 = sign_extend(instr & 0x1FF, 6);
 
-                reg[sr] = mem_read(offset6 + BaseR);
+                reg[sr] = mem_read(offset6 + BaseR);        //TODO: check if reg[] is needed
 
                 update_flags(dr);
 
@@ -256,7 +256,66 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_TRAP:
-                //{TRAP};
+                enum {
+                    TRAP_GETC  = 0x20,  // get charcter from keyboard
+                    TRAP_OUT   = 0x21,  // output a character
+                    TRAP_PUTS  = 0x22,  // output a word string
+                    TRAP_IN    = 0x23,  // get charcter from keyboard and echo to terminal
+                    TRAP_PUTSP = 0x24,  // output a byte string
+                    TRAP_HALT  = 0x25   // halt program
+                };
+
+                switch(instr & 0xFF) {
+                    case TRAP_GETC:
+                        reg[RG_000] = (uint16_t)getchar();
+                        break;
+                    case TRAP_OUT:
+                        putc((char)reg[RG_000], stdout);
+                        fflush(stdout);
+                        break;
+                    case TRAP_PUTS:
+                        uint16_t* stringPnt = memory + reg[RG_000];
+                        uint16_t* c;
+
+                        while (*c) {
+                            putc((char)*c, stdout);
+                            ++c;
+                        }
+                        fflush(stdout);
+
+                        break;
+                    case TRAP_IN:
+                        char c = getchar();
+                        putc(c, stdout);
+                        fflush(stdout);
+
+                        reg[RG_000] = (uint16_t)c;
+                        update_flags(RG_000);
+
+                        break;
+                    case TRAP_PUTSP:
+                        uint16_t* ch = memory + reg[RG_000];
+                        while (*ch) {
+                            char char1 = (*ch) & 0xFF;
+                            putc(char1, stdout);
+                            char char2 = (*ch) >> 8;
+                            if (char2) putc(char2, stdout);
+                            ++ch;
+                        }
+                        fflush(stdout);
+
+                        break;
+                    case TRAP_HALT:
+                        puts("HALT");
+                        fflush(stdout);
+                        running = FALSE;
+
+                        break;
+                    default:
+                        abort();
+
+                }
+
                 break;
             case OP_RES:    // reserved
             case OP_RTI:    // unused
