@@ -55,7 +55,7 @@ enum opcodes {      // [name, value]
     OP_BR = 0,      // branch,
     OP_ADD,         // add, 0001
     OP_LD,          // load, 0010
-    OP_ST,          // store,
+    OP_ST,          // store, 0011
     OP_JSR,         // jump register,
     OP_AND,         // bitwise and, 0101
     OP_LDR,         // load register,
@@ -150,7 +150,13 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_ST:
-                //{ST}
+                uint16_t sr = (instr >> 6) & 0x7;
+                uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
+
+                reg[sr] = mem_read(PCoffset9 + reg[RG_PC]);
+
+                update_flags(dr);
+
                 break;
             case OP_JSR:
                 //{JSR};
@@ -190,7 +196,7 @@ int main(int argc, const char* argv[]) {
                 break;
             case OP_LDI:
                 uint16_t dr        = (instr >> 9) & 0x7;
-                uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
+                uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);
 
                 reg[dr] = mem_read(mem_read(PCoffset9 + reg[RG_PC]));
 
