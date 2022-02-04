@@ -61,7 +61,7 @@ enum opcodes {      // [name, value]
     OP_LDR,         // load register,
     OP_STR,         // store register,
     OP_RTI,         // unused opcode
-    OP_NOT,         // bitwise not,
+    OP_NOT,         // bitwise not, 1001
     OP_LDI,         // indirect load, 1010
     OP_STI,         // indirect store,
     OP_JMP,         // jump, 1100
@@ -180,7 +180,13 @@ int main(int argc, const char* argv[]) {
                 //{STR};
                 break;
             case OP_NOT:
-                //{NOT};
+                uint16_t dr = (instr >> 9) & 0x7;   // destination register
+                uint16_t sr = (instr >> 6) & 0x7;   // source register
+
+                reg[dr] = ~(reg[sr]);
+
+                update_flags(dr);
+
                 break;
             case OP_LDI:
                 uint16_t dr        = (instr >> 9) & 0x7;
