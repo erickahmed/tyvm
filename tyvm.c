@@ -56,7 +56,7 @@ enum opcodes {      // [name, value]
     OP_ADD,         // add, 0001
     OP_LD,          // load, 0010
     OP_ST,          // store, 0011
-    OP_JSR,         // jump register,
+    OP_JSR,         // jump register, 0100
     OP_AND,         // bitwise and, 0101
     OP_LDR,         // load register,
     OP_STR,         // store register, 0111
@@ -163,7 +163,13 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_JSR:
-                //{JSR};
+                uint16_t PCoffset11 = sign_extend(instr & 0x1FF, 11);
+                uint16_t jsr_flag   = (instr >> 11) & 0x1;
+                uint16_t BaseR_jsrr  = (instr >> 6) & 0x7;          // JSRR only ecoding
+
+                if(jsr_flag == 0) reg[RG_PC] = BaseR_jsrr;          // JSRR
+                else reg[RG_PC] += PCoffset11;                      // JSR
+
                 break;
             case OP_AND:
                 uint16_t dr       = (instr >> 9) & 0x7;
