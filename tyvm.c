@@ -67,7 +67,7 @@ enum opcodes {      // [name, 8-bit value]
     OP_JMP,         // jump, 1100
     OP_RES,         // reserved opcode,
     OP_LEA,         // load effective address, 1110
-    OP_TRAP,        // execute trap,
+    OP_TRAP,        // execute trap, 1111
 };
 
 /* Creating condition flags */
@@ -111,7 +111,9 @@ int main(int argc, const char* argv[]) {
     disable_input_buffering();
 
     reg[RG_COND] = FL_Z;
-    reg[RG_PC]   = 0x3000;     //0x3000 is default load address
+
+    enum {PC_START = 0x3000};
+    reg[RG_PC] = PC_START;          //0x3000 is default load address
 
     int running = TRUE;
     while(running) {
