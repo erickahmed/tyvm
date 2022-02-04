@@ -259,7 +259,7 @@ int main(int argc, const char* argv[]) {
             case OP_RES:            // reserved
             case OP_RTI:            // unused
             default:
-                //{BAD_OPCODE}
+                abort();
                 break;
         }
     }
