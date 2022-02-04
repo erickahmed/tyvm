@@ -141,9 +141,12 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_LD:
+                uint16_t dr        = (instr >> 9) & 0x7;
+                uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
 
+                reg[dr] = mem_read(PCoffset9 + reg[RG_PC]);
 
-
+                update_flags(dr);
 
                 break;
             case OP_ST:
@@ -183,7 +186,7 @@ int main(int argc, const char* argv[]) {
                 uint16_t dr        = (instr >> 9) & 0x7;
                 uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
 
-                reg[dr] = mem_read(mem_read(PCoffset9 + reg[RG_PC]++));
+                reg[dr] = mem_read(mem_read(PCoffset9 + reg[RG_PC]));
 
                 update_flags(dr);
 
