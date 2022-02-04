@@ -51,13 +51,13 @@ uint16_t memory[UINT16_MAX];
 uint16_t reg[RG_COUNT];
 
 /* Creating instruction set opcodes */
-enum opcodes {      // [description, opcode value]
+enum opcodes {      // [name, value]
     OP_BR = 0,      // branch,
     OP_ADD,         // add, 0001
-    OP_LD,          // load,
+    OP_LD,          // load, 0010
     OP_ST,          // store,
     OP_JSR,         // jump register,
-    OP_AND,         // bitwise and,
+    OP_AND,         // bitwise and, 0101
     OP_LDR,         // load register,
     OP_STR,         // store register,
     OP_RTI,         // unused opcode
@@ -120,7 +120,7 @@ int main(int argc, const char* argv[]) {
 
         switch (op) {
             case OP_BR:
-                {BR};
+                //{BR};
                 break;
             case OP_ADD:
                 uint16_t dr       = (instr >> 9) & 0x7;  // destination register
@@ -141,7 +141,10 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_LD:
-                //{LD};
+
+
+
+
                 break;
             case OP_ST:
                 //{ST}
@@ -177,12 +180,10 @@ int main(int argc, const char* argv[]) {
                 //{NOT};
                 break;
             case OP_LDI:
-                uint16_t mdr;                                           // memory data register
                 uint16_t dr        = (instr >> 9) & 0x7;
                 uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
 
-                reg[mdr] = mem_read(PCoffset9 + reg[RG_PC]++);
-                reg[dr]  = mem_read(reg[mdr]);
+                reg[dr] = mem_read(mem_read(PCoffset9 + reg[RG_PC]++));
 
                 update_flags(dr);
 
@@ -199,8 +200,8 @@ int main(int argc, const char* argv[]) {
             case OP_TRAP:
                 //{TRAP};
                 break;
-            case OP_RES:
-            case OP_RTI:
+            case OP_RES:            // reserved
+            case OP_RTI:            // unused
             default:
                 //{BAD_OPCODE}
                 break;
