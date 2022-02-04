@@ -64,7 +64,7 @@ enum opcodes {      // [name, value]
     OP_NOT,         // bitwise not,
     OP_LDI,         // indirect load, 1010
     OP_STI,         // indirect store,
-    OP_JMP,         // jump,
+    OP_JMP,         // jump, 1100
     OP_RES,         // reserved opcode,
     OP_LEA,         // load effective address,
     OP_TRAP,        // execute trap,
@@ -195,7 +195,12 @@ int main(int argc, const char* argv[]) {
                 //{STI};
                 break;
             case OP_JMP:
-                //{JMP};
+                uint16_t BaseR = (instr >> 6) & 0x7;
+
+                reg[RG_PC] = reg[BaseR];
+
+                update_flags(dr);
+
                 break;
             case OP_LEA:
                 //{LEA};
