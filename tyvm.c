@@ -34,7 +34,7 @@
 enum mmr {
     MMR_KSR = 0xFE00,   // keyboard status
     MMR_KDR = 0xFE02    // keyboard data
-}
+};
 
 /* Initializing 10 registers of which:
 8 general purpose, 1 program counter, 1 conditional */
