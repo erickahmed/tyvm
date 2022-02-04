@@ -46,6 +46,7 @@ enum registers {
     RG_COUNT
 };
 
+/* Trap codes used for OP_TRAP */
 enum trapcodes {
     TRAP_GETC  = 0x20,  // get charcter from keyboard
     TRAP_OUT   = 0x21,  // output a character
