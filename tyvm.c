@@ -116,11 +116,11 @@ int main(int argc, const char* argv[]) {
     int running = TRUE;
     while(running) {
         uint16_t instr = mem_read(reg[RG_PC]++);
-        uint16_t op = instr >> 12;
+        uint16_t op    = instr >> 12;
 
         switch (op) {
             case OP_BR:
-                uint16_t cond = (instr >> 9) & 0x7;
+                uint16_t cond      = (instr >> 9) & 0x7;
                 uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);
 
                 if(cond & reg[RG_COND]) reg[RG_PC] += PCoffset9;
@@ -154,7 +154,7 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_ST:
-                uint16_t sr = (instr >> 6) & 0x7;
+                uint16_t sr        = (instr >> 6) & 0x7;
                 uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
 
                 reg[sr] = mem_read(PCoffset9 + reg[RG_PC]);
@@ -163,8 +163,8 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_JSR:
-                uint16_t PCoffset11 = sign_extend(instr & 0x1FF, 11);
-                uint16_t jsr_flag   = (instr >> 11) & 0x1;
+                uint16_t PCoffset11  = sign_extend(instr & 0x1FF, 11);
+                uint16_t jsr_flag    = (instr >> 11) & 0x1;
                 uint16_t BaseR_jsrr  = (instr >> 6) & 0x7;          // JSRR only ecoding
 
                 if(jsr_flag == 0) reg[RG_PC] = BaseR_jsrr;          // JSRR
@@ -193,8 +193,8 @@ int main(int argc, const char* argv[]) {
                 //{LDR};
                 break;
             case OP_STR:
-                uint16_t sr = (instr >> 6) & 0x7;
-                uint16_t BaseR = (instr >> 6) & 0x7;
+                uint16_t sr      = (instr >> 6) & 0x7;
+                uint16_t BaseR   = (instr >> 6) & 0x7;
                 uint16_t offset6 = sign_extend(instr & 0x1FF, 6);
 
                 reg[sr] = mem_read(offset6 + BaseR);
@@ -221,7 +221,7 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_STI:
-                uint16_t sr = (instr >> 6) & 0x7;
+                uint16_t sr        = (instr >> 6) & 0x7;
                 uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
 
                 reg[sr] = mem_read(mem_read(PCoffset9 + reg[RG_PC]));
