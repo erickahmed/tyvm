@@ -258,8 +258,8 @@ int main(int argc, const char* argv[]) {
             case OP_TRAP:
                 //{TRAP};
                 break;
-            case OP_RES:            // reserved
-            case OP_RTI:            // unused
+            case OP_RES:    // reserved
+            case OP_RTI:    // unused
             default:
                 abort();
                 break;
