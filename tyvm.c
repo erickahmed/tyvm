@@ -113,7 +113,7 @@ void update_flags(uint16_t r) {
 void read_image_file(FILE* file) {
     /* image placement memory location */
     uint16_t origin;
-    fread(&origin, sizeof(origin), 1, file)
+    fread(&origin, sizeof(origin), 1, file);
     origin = swap16(origin);
 
     uint16_t max_read = UINT16_MAX - origin;
@@ -125,6 +125,17 @@ void read_image_file(FILE* file) {
         *p = swap16(*p);
         ++p;
     }
+}
+
+int read_image(const char* image_path) {
+    FILE* file = fopen(image_path, "rb");
+
+    if (!file) { return 0; };
+
+    read_image_file(file);
+    fclose(file);
+
+    return 1;
 }
 
 int main(int argc, const char* argv[]) {
