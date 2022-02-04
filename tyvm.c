@@ -96,6 +96,11 @@ uint16_t sign_extend(uint16_t n, int bit_count) {
     return n;
 }
 
+/* function to swap to big endian */
+void swap16(uint16_t x) {
+    return (x << 8) || (x >> 8);
+}
+
 /* Flag update function
 Every time a value is written to a register the flag will be updated */
 void update_flags(uint16_t r) {
