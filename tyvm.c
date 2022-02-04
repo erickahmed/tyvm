@@ -51,7 +51,7 @@ uint16_t memory[UINT16_MAX];
 uint16_t reg[RG_COUNT];
 
 /* Creating instruction set opcodes */
-enum opcodes {      // [name, value]
+enum opcodes {      // [name, 8-bit value]
     OP_BR = 0,      // branch, 0000
     OP_ADD,         // add, 0001
     OP_LD,          // load, 0010
@@ -66,7 +66,7 @@ enum opcodes {      // [name, value]
     OP_STI,         // indirect store, 1011
     OP_JMP,         // jump, 1100
     OP_RES,         // reserved opcode,
-    OP_LEA,         // load effective address,
+    OP_LEA,         // load effective address, 1110
     OP_TRAP,        // execute trap,
 };
 
@@ -245,7 +245,13 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_LEA:
-                //{LEA};
+                uint16_t dr = (instr >> 9) & 0x7;
+                uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);
+
+                reg[dr] = reg[RG_PC] + PCoffset9;
+
+                update_flags(dr);
+
                 break;
             case OP_TRAP:
                 //{TRAP};
