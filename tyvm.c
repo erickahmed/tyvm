@@ -63,7 +63,7 @@ enum opcodes {      // [name, value]
     OP_RTI,         // unused opcode
     OP_NOT,         // bitwise not, 1001
     OP_LDI,         // indirect load, 1010
-    OP_STI,         // indirect store,
+    OP_STI,         // indirect store, 1011
     OP_JMP,         // jump, 1100
     OP_RES,         // reserved opcode,
     OP_LEA,         // load effective address,
@@ -204,7 +204,13 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_STI:
-                //{STI};
+                uint16_t sr = (instr >> 6) & 0x7;
+                uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
+
+                reg[sr] = mem_read(mem_read(PCoffset9 + reg[RG_PC]));
+
+                update_flags(dr);
+
                 break;
             case OP_JMP:
                 uint16_t BaseR = (instr >> 6) & 0x7;
