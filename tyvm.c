@@ -58,7 +58,7 @@ enum opcodes {      // [name, value]
     OP_ST,          // store, 0011
     OP_JSR,         // jump register, 0100
     OP_AND,         // bitwise and, 0101
-    OP_LDR,         // load register,
+    OP_LDR,         // load register, 0110
     OP_STR,         // store register, 0111
     OP_RTI,         // unused opcode
     OP_NOT,         // bitwise not, 1001
@@ -190,7 +190,14 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_LDR:
-                //{LDR};
+                uint16_t dr      = (instr >> 9) & 0x7;
+                uint16_t BaseR   = (instr >> 6) & 0x7;
+                uint16_t offset6 = sign_extend(instr & 0x3FF, 6);
+
+                reg[dr] = mem_read(reg[BaseR] + offset6);
+
+                update_flags(dr);
+
                 break;
             case OP_STR:
                 uint16_t sr      = (instr >> 6) & 0x7;
