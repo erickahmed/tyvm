@@ -1,8 +1,13 @@
-.PHONY: all
-all: tyvm-unix tyvm-win
+CC := gcc
+CSTND := --std=c11
+CFLAGS := -o
+SRC := tyvm.c
 
-tyvm-unix: tyvm.c includes.h registers.h
-	gcc --std=c11 tyvm.c -o tyvm-unix
+#OUT = tyvm-unix
+OUT := tyvm-win
 
-lc3sim-win: main.c lc3os.c vm.h vm.c
-	gcc --std=c11 tyvm.c -o tyvm-win
+.PHONY: all clean
+all: tyvm
+
+tyvm: tyvm.c includes.h registers.h
+	$(CC) $(CSTND) $(SRC) $(CFLAGS) $(OUT)
