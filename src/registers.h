@@ -4,7 +4,6 @@
     Written by Erick Ahmed, 2022
 */
 
-
 /* memory mapped register tables */
 enum mmr {
     MMR_KSR = 0xFE00,   // keyboard status
@@ -27,20 +26,6 @@ enum registers {
     RG_COUNT
 };
 
-/* Trap codes used for OP_TRAP */
-enum trapcodes {
-    TRAP_GETC  = 0x20,  // get charcter from keyboard
-    TRAP_OUT   = 0x21,  // output a character
-    TRAP_PUTS  = 0x22,  // output a word string
-    TRAP_IN    = 0x23,  // get charcter from keyboard and echo to terminal
-    TRAP_PUTSP = 0x24,  // output a byte string
-    TRAP_HALT  = 0x25   // halt program
-};
-
-/* Initializing memory and register storages */
-uint16_t memory[UINT16_MAX];
-uint16_t reg[RG_COUNT];
-
 /* Creating instruction set opcodes */
 enum opcodes {      // [name, 8-bit value]
     OP_BR = 0,      // branch, 0000
@@ -61,9 +46,23 @@ enum opcodes {      // [name, 8-bit value]
     OP_TRAP,        // execute trap, 1111
 };
 
+/* Trap codes used for OP_TRAP */
+enum trapcodes {
+    TRAP_GETC  = 0x20,  // get charcter from keyboard
+    TRAP_OUT   = 0x21,  // output a character
+    TRAP_PUTS  = 0x22,  // output a word string
+    TRAP_IN    = 0x23,  // get charcter from keyboard and echo to terminal
+    TRAP_PUTSP = 0x24,  // output a byte string
+    TRAP_HALT  = 0x25   // halt program
+};
+
 /* Creating condition flags */
 enum flags {
     FL_P = 1,         // Positive
     FL_Z = 1 << 1,    // Zero
     FL_N = 1 << 2,    // Negative
 };
+
+/* Initializing memory and register storages */
+uint16_t memory[UINT16_MAX];
+uint16_t reg[RG_COUNT];
