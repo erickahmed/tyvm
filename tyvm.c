@@ -4,7 +4,7 @@
     Written by Erick Ahmed, 2022
 */
 
-//#define __UNIX        // uncomment ONLY if compiling on unix-based operative system
+#define __UNIX        // uncomment ONLY if compiling on unix-based operative system
 
 /* universal libraries */
     #include <stdint.h>
@@ -111,7 +111,7 @@ uint16_t sign_extend(uint16_t n, int bit_count) {
 }
 
 /* function to swap to big endian */
-void swap16(uint16_t x) {
+int swap16(uint16_t x) {
     return (x << 8) || (x >> 8);
 }
 
@@ -173,7 +173,7 @@ void mem_write(uint16_t address, uint16_t val) {
     memory[address] = val;
 }
 
-void mem_read(uint16_t address) {
+int mem_read(uint16_t address) {
     if(address == MMR_KSR) {
         if(check_key()) {
             memory[MMR_KSR] = 1 << 15;
@@ -224,6 +224,7 @@ void mem_read(uint16_t address) {
 #endif
 
 
+
 int main(int argc, const char* argv[]) {
     if(argc < 2) {
         printf("usage: [image-file1] ...\n");
@@ -235,7 +236,7 @@ int main(int argc, const char* argv[]) {
         exit(1);
     }
 
-    signal(SIGINT, handle_interrupt());     //FIXME: handle_interrupt may not be correct, check lc3 docs
+    signal(SIGINT, handle_interrupt);     //FIXME: handle_interrupt may not be correct, check lc3 docs
     disable_input_buffering();
 
     reg[RG_COND] = FL_Z;
@@ -248,20 +249,37 @@ int main(int argc, const char* argv[]) {
         uint16_t instr = mem_read(reg[RG_PC]++);
         uint16_t op    = instr >> 12;
 
+        uint16_t cond;
+        uint16_t PCoffset9;     // 9-bit value that indicates where to load the address when added to RG_PC
+        uint16_t PCoffset11;
+        uint16_t dr;            // destination register
+        uint16_t sr;            // source register
+        uint16_t sr1;           // source register 1
+        uint16_t sr2;           // source register 2
+        uint16_t imm_flag;      // immediate mode flag (bit[5])
+        uint16_t imm5;
+        uint16_t jsr_flag;
+        uint16_t BaseR_jsr;
+        uint16_t BaseR_jsrr;
+        uint16_t BaseR;
+        uint16_t offset6;
+
+        uint16_t* stringPnt;
+        uint16_t* c;
+        uint16_t* ch;
+
         switch (op) {
             case OP_BR:
-                uint16_t cond      = (instr >> 9) & 0x7;
-                uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);
+                cond      = (instr >> 9) & 0x7;
+                PCoffset9 = sign_extend(instr & 0x1FF, 9);
 
                 if(cond & reg[RG_COND]) reg[RG_PC] += PCoffset9;
 
                 break;
             case OP_ADD:
-                uint16_t dr       = (instr >> 9) & 0x7;  // destination register
-                uint16_t sr1      = (instr >> 6) & 0x7;  // source register 1
-                uint16_t sr2;                            // source register 2
-                uint16_t imm_flag = (instr >> 5) & 0x1;  // immediate mode flag (bit[5])
-                uint16_t imm5;                           // immediate mode register
+                dr       = (instr >> 9) & 0x7;
+                sr1      = (instr >> 6) & 0x7;
+                imm_flag = (instr >> 5) & 0x1;
 
                 if(imm_flag == 0) {
                     sr2 = (instr & 0x7);
@@ -275,8 +293,8 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_LD:
-                uint16_t dr        = (instr >> 9) & 0x7;
-                uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
+                dr        = (instr >> 9) & 0x7;
+                PCoffset9 = sign_extend(instr & 0x1FF, 9);
 
                 reg[dr] = mem_read(PCoffset9 + reg[RG_PC]);
 
@@ -284,8 +302,8 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_ST:
-                uint16_t sr        = (instr >> 6) & 0x7;
-                uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
+                sr        = (instr >> 6) & 0x7;
+                PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
 
                 reg[sr] = mem_read(PCoffset9 + reg[RG_PC]);
 
@@ -293,20 +311,18 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_JSR:
-                uint16_t PCoffset11  = sign_extend(instr & 0x1FF, 11);
-                uint16_t jsr_flag    = (instr >> 11) & 0x1;
-                uint16_t BaseR_jsrr  = (instr >> 6) & 0x7;          // JSRR only ecoding
+                PCoffset11  = sign_extend(instr & 0x1FF, 11);
+                jsr_flag    = (instr >> 11) & 0x1;
+                BaseR_jsrr  = (instr >> 6) & 0x7;          // JSRR only ecoding
 
                 if(jsr_flag == 0) reg[RG_PC] = BaseR_jsrr;          // JSRR
                 else reg[RG_PC] += PCoffset11;                      // JSR
 
                 break;
             case OP_AND:
-                uint16_t dr       = (instr >> 9) & 0x7;
-                uint16_t sr1      = (instr >> 6) & 0x7;
-                uint16_t sr2;
-                uint16_t imm_flag = (instr >> 5) & 0x1;
-                uint16_t imm5;
+                dr       = (instr >> 9) & 0x7;
+                sr1      = (instr >> 6) & 0x7;
+                imm_flag = (instr >> 5) & 0x1;
 
                 if(imm_flag == 0) {
                     sr2 = (instr & 0x7);
@@ -320,9 +336,9 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_LDR:
-                uint16_t dr      = (instr >> 9) & 0x7;
-                uint16_t BaseR   = (instr >> 6) & 0x7;
-                uint16_t offset6 = sign_extend(instr & 0x3FF, 6);
+                dr      = (instr >> 9) & 0x7;
+                BaseR   = (instr >> 6) & 0x7;
+                offset6 = sign_extend(instr & 0x3FF, 6);
 
                 reg[dr] = mem_read(reg[BaseR] + offset6);
 
@@ -330,9 +346,9 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_STR:
-                uint16_t sr      = (instr >> 6) & 0x7;
-                uint16_t BaseR   = (instr >> 6) & 0x7;
-                uint16_t offset6 = sign_extend(instr & 0x1FF, 6);
+                sr      = (instr >> 6) & 0x7;
+                BaseR   = (instr >> 6) & 0x7;
+                offset6 = sign_extend(instr & 0x1FF, 6);
 
                 reg[sr] = mem_read(offset6 + BaseR);        //TODO: check if reg[] is needed
 
@@ -340,8 +356,8 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_NOT:
-                uint16_t dr = (instr >> 9) & 0x7;   // destination register
-                uint16_t sr = (instr >> 6) & 0x7;   // source register
+                dr = (instr >> 9) & 0x7;   // destination register
+                sr = (instr >> 6) & 0x7;   // source register
 
                 reg[dr] = ~(reg[sr]);
 
@@ -349,8 +365,8 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_LDI:
-                uint16_t dr        = (instr >> 9) & 0x7;
-                uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);
+                dr        = (instr >> 9) & 0x7;
+                PCoffset9 = sign_extend(instr & 0x1FF, 9);
 
                 reg[dr] = mem_read(mem_read(PCoffset9 + reg[RG_PC]));
 
@@ -358,8 +374,8 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_STI:
-                uint16_t sr        = (instr >> 6) & 0x7;
-                uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
+                sr        = (instr >> 6) & 0x7;
+                PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
 
                 reg[sr] = mem_read(mem_read(PCoffset9 + reg[RG_PC]));
 
@@ -367,7 +383,7 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_JMP:
-                uint16_t BaseR = (instr >> 6) & 0x7;
+                BaseR = (instr >> 6) & 0x7;
 
                 reg[RG_PC] = reg[BaseR];
 
@@ -375,8 +391,8 @@ int main(int argc, const char* argv[]) {
 
                 break;
             case OP_LEA:
-                uint16_t dr = (instr >> 9) & 0x7;
-                uint16_t PCoffset9 = sign_extend(instr & 0x1FF, 9);
+                dr = (instr >> 9) & 0x7;
+                PCoffset9 = sign_extend(instr & 0x1FF, 9);
 
                 reg[dr] = reg[RG_PC] + PCoffset9;
 
@@ -393,8 +409,7 @@ int main(int argc, const char* argv[]) {
                         fflush(stdout);
                         break;
                     case TRAP_PUTS:
-                        uint16_t* stringPnt = memory + reg[RG_000];
-                        uint16_t* c;
+                        stringPnt = memory + reg[RG_000];
 
                         while (*c) {
                             putc((char)*c, stdout);
@@ -414,7 +429,7 @@ int main(int argc, const char* argv[]) {
 
                         break;
                     case TRAP_PUTSP:
-                        uint16_t* ch = memory + reg[RG_000];
+                        ch = memory + reg[RG_000];
                         while (*ch) {
                             char char1 = (*ch) & 0xFF;
                             putc(char1, stdout);
