@@ -158,15 +158,16 @@ int read_image(const char* image_path) {
     return select(1, &readfds, NULL, NULL, &timeout) != 0;
 }
 #else
-uint16_t check_key()
-{
-    return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 && _kbhit();
-}
+    uint16_t check_key()
+    {
+        return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 && _kbhit();
+    }
+#endif
 
 void mem_write(uint16_t address, uint16_t val) {
     memory[address] = val;
 }
-#endif
+
 
 void mem_read(uint16_t address) {
     if(address == MMR_KSR) {
@@ -179,6 +180,24 @@ void mem_read(uint16_t address) {
     return memory[address];
 }
 
+#ifdef __UNIX
+    struct termios original_tio;
+
+    void disable_input_buffering()
+    {
+        tcgetattr(STDIN_FILENO, &original_tio);
+        struct termios new_tio = original_tio;
+        new_tio.c_lflag &= ~ICANON & ~ECHO;
+        tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
+    }
+
+    void restore_input_buffering()
+    {
+        tcsetattr(STDIN_FILENO, TCSANOW, &original_tio);
+    }
+#else
+
+#endif
 
 int main(int argc, const char* argv[]) {
 
