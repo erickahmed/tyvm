@@ -29,10 +29,14 @@
     #include <conio.h>
 #endif
 
+#ifndef __UNIX
+    /* windows only declaration */
+    HANDLE hStdin = INVALID_HANDLE_VALUE;
+#endif
+
 #define TRUE 1
 #define FALSE 0
 
-HANDLE hStdin = INVALID_HANDLE_VALUE;
 
 /* memory mapped register tables */
 enum mmr {
@@ -148,7 +152,6 @@ int read_image(const char* image_path) {
     return 1;
 }
 
-
 #ifdef __UNIX
     uint16_t check_key() {
     fd_set readfds;
@@ -221,9 +224,8 @@ void mem_read(uint16_t address) {
 #endif
 
 
-/* main loop */
-int main(int argc, const char* argv[]) {
 
+int main(int argc, const char* argv[]) {
     if(argc < 2) {
         printf("usage: [image-file1] ...\n");
         exit(2);
