@@ -29,6 +29,7 @@
 *.dylib
 
 # Executables
+*.exe
 *.out
 *.app
 *.i*86
@@ -55,3 +56,4 @@ dkms.conf
 .vscode/
 vcpkg/
 libraries/
+build
