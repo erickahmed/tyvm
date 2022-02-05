@@ -4,7 +4,7 @@
     Written by Erick Ahmed, 2022
 */
 
-//#define __UNIX
+//#define __UNIX        // uncomment only if compiling on unix-based operative system
 
 /* universal libraries */
     #include <stdint.h>
@@ -13,6 +13,8 @@
 
 /* unix only libraries */
 #ifdef __UNIX
+    #include <stdlib.h>
+    #include <string.h>
     #include <unistd.h>
     #include <fcntl.h>
 
@@ -21,7 +23,7 @@
     #include <sys/types.h>
     #include <sys/termios.h>
     #include <sys/mman.h>
-/* windows only */
+/* windows only libraries */
 #else
     #include <Windows.h>
     #include <conio.h>
