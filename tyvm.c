@@ -225,8 +225,7 @@ void mem_read(uint16_t address) {
 #endif
 
 
-
-
+/* main loop */
 int main(int argc, const char* argv[]) {
 
     if(argc < 2) {
@@ -239,7 +238,7 @@ int main(int argc, const char* argv[]) {
         exit(1);
     }
 
-    signal(SIGINT, handle_interrupt());     //FIXME: handle_interrupt may not be correct, gives an error without semicolons (should be without)
+    signal(SIGINT, handle_interrupt);
     disable_input_buffering();
 
     reg[RG_COND] = FL_Z;
