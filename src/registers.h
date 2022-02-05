@@ -1,7 +1,7 @@
 /*
-    TVM is a virtual machine for LC-3 based operating systems and it is used for educational purposes.
-    Copyright (c) under MIT license
-    Written by Erick Ahmed, 2022
+    TYVM is a virtual machine for LC-3 based operating systems and it is used for educational purposes.
+    Copyright (c) 2022 Erick Ahmed
+    Open-source software distributed under MIT license
 */
 
 /* memory mapped register tables */
