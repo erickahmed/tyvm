@@ -238,7 +238,7 @@ int main(int argc, const char* argv[]) {
         exit(1);
     }
 
-    signal(SIGINT, handle_interrupt);
+    signal(SIGINT, handle_interrupt());     //FIXME: handle_interrupt may not be correct, gives an error without semicolons (should be without)
     disable_input_buffering();
 
     reg[RG_COND] = FL_Z;
