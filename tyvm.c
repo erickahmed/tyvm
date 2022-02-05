@@ -4,7 +4,7 @@
     Written by Erick Ahmed, 2022
 */
 
-#define __UNIX        // uncomment ONLY if compiling on unix-based operative system
+//#define __UNIX        // uncomment ONLY if compiling on unix-based operative system
 
 /* universal libraries */
     #include <stdint.h>
