@@ -144,6 +144,22 @@ int read_image(const char* image_path) {
     return 1;
 }
 
+void mem_write(uint16_t address, uint16_t val) {
+    memory[address] = val;
+}
+
+void mem_read(uint16_t address) {
+    if(address == MMR_KSR) {
+        if(check_key()) {
+            memory[MMR_KSR] = 1 << 15;
+            memory[MMR_KDR] = getchar();
+        } else memory[MMR_KSR] = 0;
+    }
+
+    return memory[address];
+}
+
+
 int main(int argc, const char* argv[]) {
 
     if(argc < 2) {
