@@ -215,13 +215,13 @@ int mem_read(uint16_t address) {
     }
 #endif
 
-#ifdef __UNIX
+//#ifdef __UNIX
     void handle_interrupt(int signal) {
         restore_input_buffering();
         printf("\n");
         exit(-2);
     }
-#endif
+//#endif
 
 
 
