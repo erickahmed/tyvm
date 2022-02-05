@@ -7,14 +7,11 @@
 //#define __UNIX
 
 /* universal libraries */
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-#include <signal.h>
+    #include <stdint.h>
+    #include <stdio.h>
+    #include <signal.h>
 
 /* unix only libraries */
-// FIXME: solve include errors
 #ifdef __UNIX
     #include <unistd.h>
     #include <fcntl.h>
@@ -24,11 +21,16 @@
     #include <sys/types.h>
     #include <sys/termios.h>
     #include <sys/mman.h>
+/* windows only */
+#else
+    #include <Windows.h>
+    #include <conio.h>
 #endif
 
 #define TRUE 1
 #define FALSE 0
 
+HANDLE hStdin = INVALID_HANDLE_VALUE;
 
 /* memory mapped register tables */
 enum mmr {
@@ -168,7 +170,6 @@ void mem_write(uint16_t address, uint16_t val) {
     memory[address] = val;
 }
 
-
 void mem_read(uint16_t address) {
     if(address == MMR_KSR) {
         if(check_key()) {
@@ -196,8 +197,35 @@ void mem_read(uint16_t address) {
         tcsetattr(STDIN_FILENO, TCSANOW, &original_tio);
     }
 #else
+    DWORD fdwMode, fdwOldMode;
 
+    void disable_input_buffering()
+    {
+        hStdin = GetStdHandle(STD_INPUT_HANDLE);
+        GetConsoleMode(hStdin, &fdwOldMode);    // save old mode
+        fdwMode = fdwOldMode
+                ^ ENABLE_ECHO_INPUT             // no input echo
+                ^ ENABLE_LINE_INPUT;            // return when one or more characters are available
+        SetConsoleMode(hStdin, fdwMode);        // set new mode
+        FlushConsoleInputBuffer(hStdin);        // clear buffer
+    }
+
+    void restore_input_buffering()
+    {
+        SetConsoleMode(hStdin, fdwOldMode);
+    }
 #endif
+
+#ifdef __UNIX
+    void handle_interrupt(int signal) {
+        restore_input_buffering();
+        printf("\n");
+        exit(-2);
+    }
+#endif
+
+
+
 
 int main(int argc, const char* argv[]) {
 
