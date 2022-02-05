@@ -224,7 +224,6 @@ void mem_read(uint16_t address) {
 #endif
 
 
-
 int main(int argc, const char* argv[]) {
     if(argc < 2) {
         printf("usage: [image-file1] ...\n");
@@ -236,7 +235,7 @@ int main(int argc, const char* argv[]) {
         exit(1);
     }
 
-    signal(SIGINT, handle_interrupt());     //FIXME: handle_interrupt may not be correct, gives an error without semicolons (should be without)
+    signal(SIGINT, handle_interrupt());     //FIXME: handle_interrupt may not be correct, check lc3 docs
     disable_input_buffering();
 
     reg[RG_COND] = FL_Z;
@@ -435,7 +434,6 @@ int main(int argc, const char* argv[]) {
                         abort();
                         break;
                 }
-
                 break;
             case OP_RES:    // reserved
             case OP_RTI:    // unused
