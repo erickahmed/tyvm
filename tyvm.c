@@ -4,7 +4,7 @@
     Written by Erick Ahmed, 2022
 */
 
-//#define __UNIX        // uncomment only if compiling on unix-based operative system
+//#define __UNIX        // uncomment ONLY if compiling on unix-based operative system
 
 /* universal libraries */
     #include <stdint.h>
@@ -150,8 +150,7 @@ int read_image(const char* image_path) {
 
 
 #ifdef __UNIX
-    uint16_t check_key()
-{
+    uint16_t check_key() {
     fd_set readfds;
     FD_ZERO(&readfds);
     FD_SET(STDIN_FILENO, &readfds);
@@ -162,8 +161,7 @@ int read_image(const char* image_path) {
     return select(1, &readfds, NULL, NULL, &timeout) != 0;
 }
 #else
-    uint16_t check_key()
-    {
+    uint16_t check_key() {
         return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 && _kbhit();
     }
 #endif
@@ -186,23 +184,20 @@ void mem_read(uint16_t address) {
 #ifdef __UNIX
     struct termios original_tio;
 
-    void disable_input_buffering()
-    {
+    void disable_input_buffering() {
         tcgetattr(STDIN_FILENO, &original_tio);
         struct termios new_tio = original_tio;
         new_tio.c_lflag &= ~ICANON & ~ECHO;
         tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
     }
 
-    void restore_input_buffering()
-    {
+    void restore_input_buffering() {
         tcsetattr(STDIN_FILENO, TCSANOW, &original_tio);
     }
 #else
     DWORD fdwMode, fdwOldMode;
 
-    void disable_input_buffering()
-    {
+    void disable_input_buffering() {
         hStdin = GetStdHandle(STD_INPUT_HANDLE);
         GetConsoleMode(hStdin, &fdwOldMode);    // save old mode
         fdwMode = fdwOldMode
@@ -212,8 +207,7 @@ void mem_read(uint16_t address) {
         FlushConsoleInputBuffer(hStdin);        // clear buffer
     }
 
-    void restore_input_buffering()
-    {
+    void restore_input_buffering() {
         SetConsoleMode(hStdin, fdwOldMode);
     }
 #endif
