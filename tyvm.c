@@ -404,6 +404,7 @@ int main(int argc, const char* argv[]) {
 
                         break;
                     case TRAP_IN:
+                        printf("Enter a character: ");
                         char c = getchar();
                         putc(c, stdout);
                         fflush(stdout);
