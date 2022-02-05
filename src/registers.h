@@ -1,5 +1,5 @@
 /*
-    TYVM is a virtual machine for LC-3 based operating systems and it is used for educational purposes.
+    TYVM is a virtual machine based on LC-3 architecture for educational purposes.
     Copyright (c) 2022 Erick Ahmed
     Open-source software distributed under MIT license
 */
