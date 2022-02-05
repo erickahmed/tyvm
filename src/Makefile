@@ -3,8 +3,8 @@ CSTND := --std=c11
 CFLAGS := -o
 SRC := tyvm.c
 
-#OUT = tyvm-unix
-OUT := tyvm-win
+OUT = tyvm-unix
+#OUT := tyvm-win
 
 .PHONY: all clean
 all: tyvm

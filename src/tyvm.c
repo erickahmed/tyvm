@@ -4,6 +4,8 @@
     Open-source software distributed under MIT license
 */
 
+#define __UNIX
+
 #include "includes.h"
 #include "registers.h"
 

@@ -1,8 +1,4 @@
-/*
-    TYVM is a virtual machine based on LC-3 architecture for educational purposes.
-    Copyright (c) 2022 Erick Ahmed
-    Open-source software distributed under MIT license
-*/
+/* initialization of registers and memory
 
 /* memory mapped register tables */
 enum mmr {

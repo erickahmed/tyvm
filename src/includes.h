@@ -1,12 +1,4 @@
-/*
-    TYVM is a virtual machine based on LC-3 architecture for educational purposes.
-    Copyright (c) 2022 Erick Ahmed
-    Open-source software distributed under MIT license
-*/
-
 /* List of all the libraries needed to run tyvm.c */
-
-//#define __UNIX        // uncomment ONLY if compiling for unix-based operative system
 
 /* universal libraries */
     #include <stdint.h>
