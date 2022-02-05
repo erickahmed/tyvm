@@ -144,9 +144,29 @@ int read_image(const char* image_path) {
     return 1;
 }
 
+
+#ifdef __UNIX
+    uint16_t check_key()
+{
+    fd_set readfds;
+    FD_ZERO(&readfds);
+    FD_SET(STDIN_FILENO, &readfds);
+
+    struct timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 0;
+    return select(1, &readfds, NULL, NULL, &timeout) != 0;
+}
+#else
+uint16_t check_key()
+{
+    return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 && _kbhit();
+}
+
 void mem_write(uint16_t address, uint16_t val) {
     memory[address] = val;
 }
+#endif
 
 void mem_read(uint16_t address) {
     if(address == MMR_KSR) {
