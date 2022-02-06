@@ -1,10 +1,10 @@
 /*
     TYVM is a virtual machine based on LC-3 architecture for educational purposes.
     Copyright (c) 2022 Erick Ahmed
-    Open-source software distributed under MIT license
+    Open-source software distributed under GNU GPL v.3 license
 */
 
-//#define __UNIX              // used to modify code whether compiling on a Unix-based OS or a Windows machine
+#define __UNIX              // used to modify code whether compiling on a Unix-based OS or a Windows machine
 
 #include "includes.h"
 #include "registers.h"
@@ -190,14 +190,14 @@ int main(int argc, const char* argv[]) {
         uint16_t* ch;
 
         switch (op) {
-            case OP_BR:
+            case BR:
                 cond      = (instr >> 9) & 0x7;
                 PCoffset9 = sign_extend(instr & 0x1FF, 9);
 
                 if(cond & reg[RG_COND]) reg[RG_PC] += PCoffset9;
 
                 break;
-            case OP_ADD:
+            case ADD:
                 dr       = (instr >> 9) & 0x7;
                 sr1      = (instr >> 6) & 0x7;
                 imm_flag = (instr >> 5) & 0x1;
@@ -213,7 +213,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case OP_LD:
+            case LD:
                 dr        = (instr >> 9) & 0x7;
                 PCoffset9 = sign_extend(instr & 0x1FF, 9);
 
@@ -222,7 +222,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case OP_ST:
+            case ST:
                 sr        = (instr >> 6) & 0x7;
                 PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
 
@@ -231,7 +231,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case OP_JSR:
+            case JSR:
                 PCoffset11  = sign_extend(instr & 0x1FF, 11);
                 jsr_flag    = (instr >> 11) & 0x1;
                 BaseR_jsrr  = (instr >> 6) & 0x7;          // JSRR only ecoding
@@ -240,7 +240,7 @@ int main(int argc, const char* argv[]) {
                 else reg[RG_PC] += PCoffset11;                      // JSR
 
                 break;
-            case OP_AND:
+            case AND:
                 dr       = (instr >> 9) & 0x7;
                 sr1      = (instr >> 6) & 0x7;
                 imm_flag = (instr >> 5) & 0x1;
@@ -256,7 +256,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case OP_LDR:
+            case LDR:
                 dr      = (instr >> 9) & 0x7;
                 BaseR   = (instr >> 6) & 0x7;
                 offset6 = sign_extend(instr & 0x3FF, 6);
@@ -266,7 +266,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case OP_STR:
+            case STR:
                 sr      = (instr >> 6) & 0x7;
                 BaseR   = (instr >> 6) & 0x7;
                 offset6 = sign_extend(instr & 0x1FF, 6);
@@ -276,7 +276,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case OP_NOT:
+            case NOT:
                 dr = (instr >> 9) & 0x7;   // destination register
                 sr = (instr >> 6) & 0x7;   // source register
 
@@ -285,7 +285,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case OP_LDI:
+            case LDI:
                 dr        = (instr >> 9) & 0x7;
                 PCoffset9 = sign_extend(instr & 0x1FF, 9);
 
@@ -294,7 +294,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case OP_STI:
+            case STI:
                 sr        = (instr >> 6) & 0x7;
                 PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
 
@@ -303,7 +303,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case OP_JMP:
+            case JMP:
                 BaseR = (instr >> 6) & 0x7;
 
                 reg[RG_PC] = reg[BaseR];
@@ -311,7 +311,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case OP_LEA:
+            case LEA:
                 dr = (instr >> 9) & 0x7;
                 PCoffset9 = sign_extend(instr & 0x1FF, 9);
 
@@ -320,17 +320,17 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case OP_TRAP:
+            case TRAP:
                 switch(instr & 0xFF) {
-                    case TRAP_GETC:
-                        reg[RG_000] = (uint16_t)getchar();
+                    case GETC:
+                        reg[R0] = (uint16_t)getchar();
                         break;
-                    case TRAP_OUT:
-                        putc((char)reg[RG_000], stdout);
+                    case OUTP:
+                        putc((char)reg[R0], stdout);
                         fflush(stdout);
                         break;
-                    case TRAP_PUTS:
-                        stringPnt = memory + reg[RG_000];
+                    case PUTS:
+                        stringPnt = memory + reg[R0];
 
                         while (*c) {
                             putc((char)*c, stdout);
@@ -339,18 +339,18 @@ int main(int argc, const char* argv[]) {
                         fflush(stdout);
 
                         break;
-                    case TRAP_IN:
+                    case INP:
                         printf("Enter a character: ");
                         char c = getchar();
                         putc(c, stdout);
                         fflush(stdout);
 
-                        reg[RG_000] = (uint16_t)c;
-                        update_flags(RG_000);
+                        reg[R0] = (uint16_t)c;
+                        update_flags(R0);
 
                         break;
-                    case TRAP_PUTSP:
-                        ch = memory + reg[RG_000];
+                    case PUTSP:
+                        ch = memory + reg[R0];
                         while (*ch) {
                             char char1 = (*ch) & 0xFF;
                             putc(char1, stdout);
@@ -361,7 +361,7 @@ int main(int argc, const char* argv[]) {
                         fflush(stdout);
 
                         break;
-                    case TRAP_HALT:
+                    case HALT:
                         puts("HALT");
                         fflush(stdout);
                         running = FALSE;
@@ -372,8 +372,8 @@ int main(int argc, const char* argv[]) {
                         break;
                 }
                 break;
-            case OP_RES:    // reserved
-            case OP_RTI:    // unused
+            case RES:    // reserved
+            case RTI:    // unused
             default:
                 abort();
                 break;
