@@ -4,7 +4,7 @@
     Open-source software distributed under MIT license
 */
 
-#define __UNIX
+//#define __UNIX              // used to modify code whether compiling on a Unix-based OS or a Windows machine
 
 #include "includes.h"
 #include "registers.h"
@@ -57,14 +57,22 @@ void read_image_file(FILE* file) {
     }
 }
 
-int read_image(const char* image_path) {
-    FILE* file = fopen(image_path, "rb");
-
-    if(!file) return 0;
-
-    read_image_file(file);
-    fclose(file);
-
+int read_image(const char* file) {
+    FILE* image= fopen(file,"rb");
+    if(!image){
+        return 0;
+    }
+    uint16_t origin;
+    fread(&origin,sizeof(origin),1,image);
+    origin = swap16(origin);
+    uint16_t max_read = UINT16_MAX - origin;
+    uint16_t* i = memory + origin;
+    size_t read = fread(i,sizeof(uint16_t),max_read,image);
+    // swap
+    while(read-- > 0){
+        *i = swap16(*i);
+        ++i;
+    }
     return 1;
 }
 
@@ -139,13 +147,13 @@ void handle_interrupt(int signal) {
 
 
 int main(int argc, const char* argv[]) {
-    if(argc < 2) {
+    if(argc != 2) {
         printf("usage: [image-file1] ...\n");
         exit(2);
     }
 
-    for(int i = 1; i < argc; i++) {
-        printf("failed to load image: %s\n", argv[i]);
+    if(!read_image(argv[1])) {
+        printf("failed to load image: %s\n", argv[2]);
         exit(1);
     }
 
