@@ -68,7 +68,7 @@ int read_image(const char* file) {
     uint16_t max_read = UINT16_MAX - origin;
     uint16_t* i = memory + origin;
     size_t read = fread(i,sizeof(uint16_t),max_read,image);
-    // swap
+
     while(read-- > 0){
         *i = swap16(*i);
         ++i;
