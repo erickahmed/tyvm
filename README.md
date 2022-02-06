@@ -1,5 +1,5 @@
 # TyVM - [T]in[y] [V]irtual [M]achine
-TYVM (Tiny Virtual Machine) is a 16bit VM based on the LC-3 architechture
+TyVM is a 16bit VM based on the LC-3 architechture
 
 ### HARDWARE:
   - 16-bit on LC-3 architecture
