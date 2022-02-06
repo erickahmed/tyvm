@@ -7,5 +7,5 @@ TyVM is a 16bit VM based on the LC-3 architechture
   - 10 registers:
     - 8 general purpose
     - 1 program counter
-    - 1 condition flag
+    - 1 condition register
   - 3 condition flags
