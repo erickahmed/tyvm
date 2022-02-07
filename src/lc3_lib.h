@@ -22,6 +22,9 @@ int read_image(const char* file);
 void disable_input_buffering();
 void restore_input_buffering();
 
+/* check key - unix or win */
+uint16_t check_key();
+
 /* Write to memory address */
 void mem_write(uint16_t address, uint16_t val);
 
