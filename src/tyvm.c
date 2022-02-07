@@ -8,9 +8,6 @@
 #include "registers.c"
 #include "lc3_lib.h"
 
-
-
-
 int main(int argc, const char* argv[]) {
     if(argc != 2) {
         printf("loading image: %s\n", argv[2]);
