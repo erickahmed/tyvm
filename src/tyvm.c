@@ -4,151 +4,16 @@
     Open-source software distributed under GNU GPL v.3 license
 */
 
-#define __UNIX              // used to modify code whether compiling on a Unix-based OS or a Windows machine
-
-#include "includes.h"
-#include "registers.h"
-
-#ifndef __UNIX
-    HANDLE hStdin = INVALID_HANDLE_VALUE;
-#endif
-
-#define TRUE 1
-#define FALSE 0
+#include "preprocessor.h"
+#include "registers.c"
+#include "lc3_lib.h"
 
 
-/* Sign extension function for immediate add mode (imm5[0:4])
-transforms 5bit number to 8bit number preserving sign*/
-uint16_t sign_extend(uint16_t n, int bit_count) {
-    if((n >> (bit_count - 1)) & 1) {
-        n |= (0xFFFF << bit_count);
-    }
-    return n;
-}
-
-/* function to swap to big endian */
-int swap16(uint16_t x) {
-    return (x << 8) || (x >> 8);
-}
-
-/* Flag update function
-Every time a value is written to a register the flag will be updated */
-void update_flags(uint16_t r) {
-    if(reg[r] == 0) reg[RG_COND] = FL_Z;
-    else if(reg[r] >> 15) reg[RG_COND] = FL_N;
-    else reg[RG_COND] = FL_P;
-}
-
-/* function to load assembly programs*/
-void read_image_file(FILE* file) {
-    /* image placement memory location */
-    uint16_t origin;
-    fread(&origin, sizeof(origin), 1, file);
-    origin = swap16(origin);
-
-    uint16_t max_read = UINT16_MAX - origin;
-    uint16_t* p = memory + origin;
-    size_t read = fread(p, sizeof(uint16_t), max_read, file);
-
-    /* swapping to little endian */
-    while (read-- > 0) {
-        *p = swap16(*p);
-        ++p;
-    }
-}
-
-int read_image(const char* file) {
-    FILE* image= fopen(file,"rb");
-    if(!image){
-        return 0;
-    }
-    uint16_t origin;
-    fread(&origin,sizeof(origin),1,image);
-    origin = swap16(origin);
-    uint16_t max_read = UINT16_MAX - origin;
-    uint16_t* i = memory + origin;
-    size_t read = fread(i,sizeof(uint16_t),max_read,image);
-
-    while(read-- > 0){
-        *i = swap16(*i);
-        ++i;
-    }
-    return 1;
-}
-
-#ifdef __UNIX
-    uint16_t check_key() {
-    fd_set readfds;
-    FD_ZERO(&readfds);
-    FD_SET(STDIN_FILENO, &readfds);
-
-    struct timeval timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 0;
-    return select(1, &readfds, NULL, NULL, &timeout) != 0;
-}
-#else
-    uint16_t check_key() {
-        return WaitForSingleObject(hStdin, 1000) == WAIT_OBJECT_0 && _kbhit();
-    }
-#endif
-
-void mem_write(uint16_t address, uint16_t val) {
-    memory[address] = val;
-}
-
-int mem_read(uint16_t address) {
-    if(address == MMR_KSR) {
-        if(check_key()) {
-            memory[MMR_KSR] = 1 << 15;
-            memory[MMR_KDR] = getchar();
-        } else memory[MMR_KSR] = 0;
-    }
-
-    return memory[address];
-}
-
-#ifdef __UNIX
-    struct termios original_tio;
-
-    void disable_input_buffering() {
-        tcgetattr(STDIN_FILENO, &original_tio);
-        struct termios new_tio = original_tio;
-        new_tio.c_lflag &= ~ICANON & ~ECHO;
-        tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
-    }
-
-    void restore_input_buffering() {
-        tcsetattr(STDIN_FILENO, TCSANOW, &original_tio);
-    }
-#else
-    DWORD fdwMode, fdwOldMode;
-
-    void disable_input_buffering() {
-        hStdin = GetStdHandle(STD_INPUT_HANDLE);
-        GetConsoleMode(hStdin, &fdwOldMode);    // save old mode
-        fdwMode = fdwOldMode
-                ^ ENABLE_ECHO_INPUT             // no input echo
-                ^ ENABLE_LINE_INPUT;            // return when one or more characters are available
-        SetConsoleMode(hStdin, fdwMode);        // set new mode
-        FlushConsoleInputBuffer(hStdin);        // clear buffer
-    }
-
-    void restore_input_buffering() {
-        SetConsoleMode(hStdin, fdwOldMode);
-    }
-#endif
-
-void handle_interrupt(int signal) {
-    restore_input_buffering();
-    printf("\n");
-    exit(-2);
-}
 
 
 int main(int argc, const char* argv[]) {
     if(argc != 2) {
-        printf("usage: [image-file1] ...\n");
+        printf("loading image: %s\n", argv[2]);
         exit(2);
     }
 

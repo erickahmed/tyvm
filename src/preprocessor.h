@@ -1,4 +1,6 @@
-/* List of all the libraries needed to run tyvm.c */
+/* preprocessor directves needed to run tyvm.c */
+
+#define __UNIX              // used to modify code whether compiling on a Unix-based OS or a Windows machine
 
 /* universal libraries */
     #include <stdint.h>
@@ -22,3 +24,10 @@
     #include <Windows.h>
     #include <conio.h>
 #endif
+
+#ifndef __UNIX
+    HANDLE hStdin = INVALID_HANDLE_VALUE;
+#endif
+
+#define TRUE 1
+#define FALSE 0
