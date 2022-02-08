@@ -19,7 +19,7 @@ int main(int argc, const char* argv[]) {
         exit(1);
     }
 
-    signal(SIGINT, handle_interrupt);     //FIXME: handle_interrupt may not be correct, check lc3 docs
+    signal(SIGINT, handle_interrupt);
     disable_input_buffering();
 
     reg[RG_COND] = FL_Z;
@@ -29,27 +29,27 @@ int main(int argc, const char* argv[]) {
 
     int running = TRUE;
     while(running) {
-        uint16_t instr = mem_read(reg[RG_PC]++);
-        uint16_t op    = instr >> 12;
+        static uint16_t instr = mem_read(reg[RG_PC]++);
+        static uint16_t op    = instr >> 12;
 
-        uint16_t cond;
-        uint16_t PCoffset9;     // 9-bit value that indicates where to load the address when added to RG_PC
-        uint16_t PCoffset11;
-        uint16_t dr;            // destination register
-        uint16_t sr;            // source register
-        uint16_t sr1;           // source register 1
-        uint16_t sr2;           // source register 2
-        uint16_t imm_flag;      // immediate mode flag (bit[5])
-        uint16_t imm5;
-        uint16_t jsr_flag;
-        uint16_t BaseR_jsr;
-        uint16_t BaseR_jsrr;
-        uint16_t BaseR;
-        uint16_t offset6;
+        static uint16_t cond;   // condition flag status
+        static uint16_t PCoffset9;     // 9-bit value that indicates where to load the address when added to PC register
+        static uint16_t PCoffset11;    // 11-bit value that indicates where to load the address when added to PC register
+        static uint16_t dr;            // destination register
+        static uint16_t sr;            // source register
+        static uint16_t sr1;           // source register 1
+        static uint16_t sr2;           // source register 2
+        static uint16_t imm_flag;      // immediate mode flag (bit[5])
+        static uint16_t imm5;          // immediate mode 5 bit value
+        static uint16_t jsr_flag;      // JSR flag
+        static uint16_t BaseR_jsr;
+        static uint16_t BaseR_jsrr;
+        static uint16_t BaseR;
+        static uint16_t offset6;       // 6-bit offset value
 
-        uint16_t* stringPnt;
-        uint16_t* c;
-        uint16_t* ch;
+        static uint16_t* stringPnt;
+        static uint16_t* c;
+        static uint16_t* ch;
 
         switch (op) {
             case BR:
