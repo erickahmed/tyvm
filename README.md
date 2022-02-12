@@ -75,7 +75,7 @@ enum {           // [name, 8-bit value]
 50  Goto 10;
 
 ### Build
-On file "preprocessor.c" define the OS where you want to run TYVM. Uncomment the following line if you want to build for Windows, otherwise it will build for Unix:
+On file "preprocessor.c" define the OS where you want to run TYVM. Comment out the following line if you want to build for Windows, otherwise it will build for Unix:
 ``` 
 #define __UNIX
 ``` 
