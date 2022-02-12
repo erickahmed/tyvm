@@ -1,24 +1,13 @@
 # TyVM - [T]in[y] [V]irtual [M]achine
 TyVM is a 16bit VM based on the LC-3 architechture that runs Assembly code, and could more generally run even an operating system
 
-## Resources
-https://en.wikipedia.org/wiki/Little_Computer_3
+## Introduction
+LC-3 is a type of computer educational assembly language.
+It features a relatively simple instruction set, but can be used to write moderately complex assembly programs, and is a viable target for a C compiler. The language is less complex than x86 assembly but has many features similar to those in more complex languages. These features make it useful for beginning instruction, so it is most often used to teach fundamentals of programming and computer architecture to computer science and computer engineering students. 
 
-### Build
-On file "preprocessor.c" define the OS where you want to run TYVM:
+The LC-3 specifies a word size of 16 bits for its registers and uses a 16-bit addressable memory with a 216-location address space. The register file contains eight registers, referred to by number as R0 through R7. All of the registers are general-purpose in that they may be freely used by any of the instructions that can write to the register file, but in some contexts (such as translating from C code to LC-3 assembly) some of the registers are used for special purposes.
 
-  #define __UNIX
-
-Uncomment this line if you want to build for Unix based OS, otherwise comment it out to build for Windows
-Build using the command:
-``` 
-gcc tyvm.c -o tyvm
-```
-Or simply using makefile (optional: in makefile change binary file name wether building on Unix or Windows):
-
-``` 
-make
-```
+Instructions are 16 bits wide and have 4-bit opcodes. The instruction set defines instructions for fifteen of the sixteen possible opcodes, though some instructions have more than one mode of operation. Individual instructions' execution is regulated by a state machine implemented with a control ROM and microsequencing unit. 
 
 ### Hardware
 TYVM is a very barebone 16-bit system on LC-3 architechture. It has:
@@ -82,6 +71,22 @@ enum {           // [name, 8-bit value]
 30  Read opcode for next instruction;
 40  Perform instruction read in 40;
 50  Goto 10;
+
+### Build
+On file "preprocessor.c" define the OS where you want to run TYVM:
+
+  #define __UNIX
+
+Uncomment this line if you want to build for Unix based OS, otherwise comment it out to build for Windows
+Build using the command:
+``` 
+gcc tyvm.c -o tyvm
+```
+Or simply using makefile (optional: in makefile change binary file name wether building on Unix or Windows):
+
+``` 
+make
+```
 
 ### Usage
 ```bash
