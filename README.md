@@ -11,7 +11,7 @@ The LC-3 specifies a word size of 16 bits for its registers and uses a 16-bit ad
 Instructions are 16 bits wide and have 4-bit opcodes. The instruction set defines instructions for fifteen of the sixteen possible opcodes, though some instructions have more than one mode of operation. Individual instructions' execution is regulated by a state machine implemented with a control ROM and microsequencing unit. 
 
 ### Hardware
-TYVM is a very barebone VM that has:
+TyVM is a very barebone VM that has:
   - 128kb memory
   - 16 opcodes
   - 10 registers
@@ -23,7 +23,7 @@ It has 2^16(=65,536) individual memory locations
 uint16_t memory[UINT16_MAX];
 ```
 #### Registers
-TYVM has n.10 16-bit registers.
+TyVM has n.10 16-bit registers.
     - 8 general purpose registers
     - 1 program counter (PC)
     - 1 conditional register (COND)
@@ -45,7 +45,7 @@ enum {
 uint16_t registers[RG_COUNT];
 ```
 #### Instruction set
-TYVM has n.16 16-bit opcodes, that instructs the machine to do some simple calculation:
+TyVM has n.16 16-bit opcodes, that instructs the machine to do some simple calculation:
 ```c
 enum {           // [name, 8-bit value]
     OP_BR = 0,      // branch, 0000
@@ -75,7 +75,7 @@ enum {           // [name, 8-bit value]
 - [50]      Goto 10;
 
 ### Build
-On file "preprocessor.c" define the OS where you want to run TYVM. Comment out the following line if you want to build for Windows, otherwise it will build for Unix:
+On file "preprocessor.c" define the OS where you want to run TyVM. Comment out the following line if you want to build for Windows, otherwise it will build for Unix:
 ``` 
 #define __UNIX
 ``` 
@@ -94,7 +94,7 @@ make
 ./tyvm <*.asm>
 ```
 
-Below is a hello-world program for `TYVM`, the assembled program can be found in `asm/` directory
+Below is a hello-world program for `TyVM`, the assembled program can be found in `asm/` directory
 ```shell
 .ORIG x3000
 LEA R0, HENLO_WORLD
