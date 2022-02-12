@@ -10,9 +10,10 @@ The LC-3 specifies a word size of 16 bits for its registers and uses a 16-bit ad
 Instructions are 16 bits wide and have 4-bit opcodes. The instruction set defines instructions for fifteen of the sixteen possible opcodes, though some instructions have more than one mode of operation. Individual instructions' execution is regulated by a state machine implemented with a control ROM and microsequencing unit. 
 
 ### Hardware
-TYVM is a very barebone 16-bit system on LC-3 architechture. It has:
-  - 128kb memory (65,536 memory locations)
-  - 10 registers:
+TYVM is a very barebone VM that has:
+  - 128kb memory
+  - 16 opcodes
+  - 10 registers
   - 3 condition flags
 
 #### Memory
