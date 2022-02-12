@@ -42,7 +42,7 @@ enum {
     RG_COND,
     RG_COUNT
 };
-uint16_t registers[R_COUNT];
+uint16_t registers[RG_COUNT];
 ```
 #### Instruction set
 TYVM has n.16 16-bit opcodes, that instructs the machine to do some simple calculation:
