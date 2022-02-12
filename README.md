@@ -91,7 +91,7 @@ make
 
 ### Usage
 ```bash
-./tyvm <*.asm>
+./tyvm <assembled_program>
 ```
 
 Below is a hello-world program for `TyVM`, the assembled program can be found in `asm/` directory
