@@ -68,11 +68,11 @@ enum {           // [name, 8-bit value]
 ```
 
 ### Logic
-- 10  Load instruction from memory at program counter [RG_PC] address;
-- 20  Increment RG_PC;
-- 30  Read opcode for next instruction;
-- 40  Perform instruction read in 40;
-- 50  Goto 10;
+- [10]      Load instruction from memory at program counter [RG_PC] address;
+- [20]      Increment RG_PC;
+- [30]      Read opcode for next instruction;
+- [40]      Perform instruction read in 40;
+- [50]      Goto 10;
 
 ### Build
 On file "preprocessor.c" define the OS where you want to run TYVM. Comment out the following line if you want to build for Windows, otherwise it will build for Unix:
