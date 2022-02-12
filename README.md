@@ -95,7 +95,7 @@ make
 ./tyvm <*.asm>
 ```
 
-Below is a `hello-word` program for `TYVM`, the assembled program can be found in `asm` directory
+Below is a hello-world program for `TYVM`, the assembled program can be found in `asm/` directory
 ```shell
 .ORIG x3000
 LEA R0, HENLO_WORLD
