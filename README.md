@@ -1,5 +1,6 @@
 # TyVM - [T]in[y] [V]irtual [M]achine
-TyVM is a 16bit VM based on the LC-3 architechture that runs Assembly code, and could more generally run even an operating system
+TyVM is a 16bit VM based on LC-3 architechture that runs a barebone version of assembly code. The whole system is geared towards CS students or (like me) people passionate about computer architecture that are just learning about the topic.
+I created this project for fun during a week, looking at how others implemented solutions for LC-3 based machines and getting inspiration from their work.
 
 ## Introduction
 LC-3 is a type of computer educational assembly language.
