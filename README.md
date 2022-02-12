@@ -81,7 +81,7 @@ On file "preprocessor.c" define the OS where you want to run TyVM. Comment out t
 ``` 
 Build using the command:
 ``` 
-gcc tyvm.c -o tyvm
+gcc --std=c11 tyvm.c -o tyvm
 ```
 Or simply using makefile (optional: in makefile change binary file name wether building on Unix or Windows):
 
