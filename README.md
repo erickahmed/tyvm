@@ -12,7 +12,7 @@ Instructions are 16 bits wide and have 4-bit opcodes. The instruction set define
 
 ### Hardware
 TyVM is a very barebone VM that has:
-  - 128kb memory
+  - 128kb of memory
   - 16 opcodes
   - 10 registers
   - 3 condition flags
@@ -47,7 +47,7 @@ uint16_t registers[RG_COUNT];
 #### Instruction set
 TyVM has n.16 16-bit opcodes, that instructs the machine to do some simple calculation:
 ```c
-enum {           // [name, 8-bit value]
+enum {              // [name, 8-bit value]
     OP_BR = 0,      // branch, 0000
     OP_ADD,         // add, 0001
     OP_LD,          // load, 0010
@@ -68,11 +68,11 @@ enum {           // [name, 8-bit value]
 ```
 
 ### Logic
-- [10]      Load instruction from memory at program counter [RG_PC] address;
-- [20]      Increment RG_PC;
-- [30]      Read opcode for next instruction;
-- [40]      Perform instruction read in 40;
-- [50]      Goto 10;
+- [10]    Load instruction from memory at program counter [RG_PC] address;
+- [20]    Increment RG_PC;
+- [30]    Read opcode for next instruction;
+- [40]    Perform instruction read in 30;
+- [50]    Goto 10;
 
 ### Build
 On file "preprocessor.c" define the OS where you want to run TyVM. Comment out the following line if you want to build for Windows, otherwise it will build for Unix:
@@ -97,9 +97,9 @@ make
 Below is a hello-world program for `TyVM`, the assembled program can be found in `asm/` directory
 ```shell
 .ORIG x3000
-LEA R0, HENLO_WORLD
+LEA R0, HELLO_WORLD
 PUTS
 HALT
-HELLO_STR .STRINGZ "Henlo World!"
+HELLO_STR .STRINGZ "Hello World!"
 .END
 ```
