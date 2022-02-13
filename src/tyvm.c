@@ -4,7 +4,7 @@
     Open-source software distributed under GNU GPL v.3 license
 */
 
-#include "preprocessor.h"
+#include "preprocessor.c"
 #include "registers.c"
 #include "lc3_lib.h"
 
@@ -29,8 +29,8 @@ int main(int argc, const char* argv[]) {
 
     int running = TRUE;
     while(running) {
-        static uint16_t instr = mem_read(reg[RG_PC]++);
-        static uint16_t op    = instr >> 12;
+        const uint16_t instr = mem_read(reg[RG_PC]++);
+        const uint16_t op    = instr >> 12;
 
         static uint16_t cond;   // condition flag status
         static uint16_t PCoffset9;     // 9-bit value that indicates where to load the address when added to PC register
@@ -52,14 +52,14 @@ int main(int argc, const char* argv[]) {
         static uint16_t* ch;
 
         switch (op) {
-            case BR:
+            case OP_BR:
                 cond      = (instr >> 9) & 0x7;
                 PCoffset9 = sign_extend(instr & 0x1FF, 9);
 
                 if(cond & reg[RG_COND]) reg[RG_PC] += PCoffset9;
 
                 break;
-            case ADD:
+            case OP_ADD:
                 dr       = (instr >> 9) & 0x7;
                 sr1      = (instr >> 6) & 0x7;
                 imm_flag = (instr >> 5) & 0x1;
@@ -75,7 +75,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case LD:
+            case OP_LD:
                 dr        = (instr >> 9) & 0x7;
                 PCoffset9 = sign_extend(instr & 0x1FF, 9);
 
@@ -84,7 +84,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case ST:
+            case OP_ST:
                 sr        = (instr >> 6) & 0x7;
                 PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
 
@@ -93,7 +93,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case JSR:
+            case OP_JSR:
                 PCoffset11  = sign_extend(instr & 0x1FF, 11);
                 jsr_flag    = (instr >> 11) & 0x1;
                 BaseR_jsrr  = (instr >> 6) & 0x7;          // JSRR only ecoding
@@ -102,7 +102,7 @@ int main(int argc, const char* argv[]) {
                 else reg[RG_PC] += PCoffset11;                      // JSR
 
                 break;
-            case AND:
+            case OP_AND:
                 dr       = (instr >> 9) & 0x7;
                 sr1      = (instr >> 6) & 0x7;
                 imm_flag = (instr >> 5) & 0x1;
@@ -118,7 +118,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case LDR:
+            case OP_LDR:
                 dr      = (instr >> 9) & 0x7;
                 BaseR   = (instr >> 6) & 0x7;
                 offset6 = sign_extend(instr & 0x3FF, 6);
@@ -128,7 +128,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case STR:
+            case OP_STR:
                 sr      = (instr >> 6) & 0x7;
                 BaseR   = (instr >> 6) & 0x7;
                 offset6 = sign_extend(instr & 0x1FF, 6);
@@ -138,7 +138,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case NOT:
+            case OP_NOT:
                 dr = (instr >> 9) & 0x7;   // destination register
                 sr = (instr >> 6) & 0x7;   // source register
 
@@ -147,7 +147,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case LDI:
+            case OP_LDI:
                 dr        = (instr >> 9) & 0x7;
                 PCoffset9 = sign_extend(instr & 0x1FF, 9);
 
@@ -156,7 +156,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case STI:
+            case OP_STI:
                 sr        = (instr >> 6) & 0x7;
                 PCoffset9 = sign_extend(instr & 0x1FF, 9);     // 9-bit value that indicates where to load the address when added to RG_PC
 
@@ -165,7 +165,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case JMP:
+            case OP_JMP:
                 BaseR = (instr >> 6) & 0x7;
 
                 reg[RG_PC] = reg[BaseR];
@@ -173,7 +173,7 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case LEA:
+            case OP_LEA:
                 dr = (instr >> 9) & 0x7;
                 PCoffset9 = sign_extend(instr & 0x1FF, 9);
 
@@ -182,17 +182,17 @@ int main(int argc, const char* argv[]) {
                 update_flags(dr);
 
                 break;
-            case TRAP:
+            case OP_TRAP:
                 switch(instr & 0xFF) {
-                    case GETC:
-                        reg[R0] = (uint16_t)getchar();
+                    case TC_GETC:
+                        reg[RG_R0] = (uint16_t)getchar();
                         break;
-                    case OUTP:
-                        putc((char)reg[R0], stdout);
+                    case TC_OUT:
+                        putc((char)reg[RG_R0], stdout);
                         fflush(stdout);
                         break;
-                    case PUTS:
-                        stringPnt = memory + reg[R0];
+                    case TC_PUTS:
+                        stringPnt = memory + reg[RG_R0];
 
                         while (*c) {
                             putc((char)*c, stdout);
@@ -201,18 +201,18 @@ int main(int argc, const char* argv[]) {
                         fflush(stdout);
 
                         break;
-                    case INP:
+                    case TC_IN:
                         printf("Enter a character: ");
                         char c = getchar();
                         putc(c, stdout);
                         fflush(stdout);
 
-                        reg[R0] = (uint16_t)c;
-                        update_flags(R0);
+                        reg[RG_R0] = (uint16_t)c;
+                        update_flags(RG_R0);
 
                         break;
-                    case PUTSP:
-                        ch = memory + reg[R0];
+                    case TC_PUTSP:
+                        ch = memory + reg[RG_R0];
                         while (*ch) {
                             char char1 = (*ch) & 0xFF;
                             putc(char1, stdout);
@@ -223,7 +223,7 @@ int main(int argc, const char* argv[]) {
                         fflush(stdout);
 
                         break;
-                    case HALT:
+                    case TC_HALT:
                         puts("HALT");
                         fflush(stdout);
                         running = FALSE;
@@ -234,8 +234,8 @@ int main(int argc, const char* argv[]) {
                         break;
                 }
                 break;
-            case RES:    // reserved
-            case RTI:    // unused
+            case OP_RES:    // reserved
+            case OP_RTI:    // unused
             default:
                 abort();
                 break;
