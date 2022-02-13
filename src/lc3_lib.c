@@ -1,7 +1,6 @@
-//FIXME: all includes maybe unnecessary
-#include "preprocessor.h"
-#include "registers.c"
+#include "preprocessor.c"
 #include "lc3_lib.h"
+#include "registers.c"
 
 uint16_t sign_extend(uint16_t n, int bit_count) {
     if((n >> (bit_count - 1)) & 1) {
@@ -57,7 +56,7 @@ int read_image(const char* file) {
     return 1;
 }
 
-/* Defining functions for Unix or Windows based systems */
+/* Defining OS-dependent functions for Unix or Windows based systems */
 #ifdef __UNIX
     uint16_t check_key() {
     fd_set readfds;
@@ -109,11 +108,11 @@ void mem_write(uint16_t address, uint16_t val) {
 }
 
 int mem_read(uint16_t address) {
-    if(address == MMR_KSR) {
+    if(address == MR_KSR) {
         if(check_key()) {
-            memory[MMR_KSR] = 1 << 15;
-            memory[MMR_KDR] = getchar();
-        } else memory[MMR_KSR] = 0;
+            memory[MR_KSR] = 1 << 15;
+            memory[MR_KDR] = getchar();
+        } else memory[MR_KSR] = 0;
     }
 
     return memory[address];

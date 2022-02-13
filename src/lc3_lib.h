@@ -1,5 +1,6 @@
 /* Library of functions used in tyvm.c */
 
+#include "preprocessor.c"
 
 /* Sign extension function for immediate add mode (imm5[0:4])
 transforms 5bit number to 8bit number preserving sign*/
