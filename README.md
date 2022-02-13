@@ -4,11 +4,11 @@ I created this project for fun during a week, looking at how others implemented 
 
 ## Introduction
 LC-3 is a type of computer educational assembly language.
-It features a relatively simple instruction set, but can be used to write moderately complex assembly programs, and is a viable target for a C compiler. The language is less complex than x86 assembly but has many features similar to those in more complex languages. These features make it useful for beginning instruction, so it is most often used to teach fundamentals of programming and computer architecture to computer science and computer engineering students. 
+It features a relatively simple instruction set, but can be used to write moderately complex assembly programs, and is a viable target for a C compiler. The language is less complex than x86 assembly but has many features similar to those in more complex languages. These features make it useful for beginning instruction, so it is most often used to teach fundamentals of programming and computer architecture to computer science and computer engineering students.
 
 The LC-3 specifies a word size of 16 bits for its registers and uses a 16-bit addressable memory with a 216-location address space. The register file contains eight registers, referred to by number as R0 through R7. All of the registers are general-purpose in that they may be freely used by any of the instructions that can write to the register file, but in some contexts (such as translating from C code to LC-3 assembly) some of the registers are used for special purposes.
 
-Instructions are 16 bits wide and have 4-bit opcodes. The instruction set defines instructions for fifteen of the sixteen possible opcodes, though some instructions have more than one mode of operation. Individual instructions' execution is regulated by a state machine implemented with a control ROM and microsequencing unit. 
+Instructions are 16 bits wide and have 4-bit opcodes. The instruction set defines instructions for fifteen of the sixteen possible opcodes, though some instructions have more than one mode of operation. Individual instructions' execution is regulated by a state machine implemented with a control ROM and microsequencing unit.
 
 ### Hardware
 TyVM is a very barebone VM that has:
@@ -16,7 +16,6 @@ TyVM is a very barebone VM that has:
   - 16 opcodes
   - 10 registers
   - 3 condition flags
-
 #### Memory
 It has 2^16(=65,536) individual memory locations
 ```
@@ -68,24 +67,24 @@ enum {              // [name, 8-bit value]
 ```
 
 ### Logic
-- [10]    Load instruction from memory at program counter [RG_PC] address;
-- [20]    Increment RG_PC;
-- [30]    Read opcode for next instruction;
-- [40]    Perform instruction read in 30;
-- [50]    Goto 10;
+- [10]  Load instruction from memory at program counter [RG_PC] address;
+- [20]  Increment RG_PC;
+- [30]  Read opcode for next instruction;
+- [40]  Perform instruction read in 30;
+- [50]  Goto 10;
 
 ### Build
 On file "preprocessor.c" define the OS where you want to run TyVM. Comment out the following line if you want to build for Windows, otherwise it will build for Unix:
-``` 
+```
 #define __UNIX
-``` 
+```
 Build using the command:
-``` 
+```
 gcc --std=c11 tyvm.c -o tyvm
 ```
 Or simply using makefile (optional: in makefile change binary file name wether building on Unix or Windows):
 
-``` 
+```
 make
 ```
 
